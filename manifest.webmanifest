@@ -1,0 +1,21 @@
+{
+  "name": "Spa Water Test",
+  "short_name": "Spa Test",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#020b14",
+  "theme_color": "#04111f",
+  "description": "Kamera-basert analyse av spa-teststrips.",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
