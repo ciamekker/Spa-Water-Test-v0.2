@@ -7,10 +7,10 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
   <title>Spa Water Test</title>
-  <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="icon" href="./icon-192.png">
-  <link rel="apple-touch-icon" href="./icon-192.png">
-  <link rel="stylesheet" href="./styles.css">
+  <link rel="manifest" href="./manifest.webmanifest?v=061">
+  <link rel="icon" href="./icon-192.png?v=061">
+  <link rel="apple-touch-icon" href="./icon-192.png?v=061">
+  <link rel="stylesheet" href="./styles.css?v=061">
 </head>
 <body>
 <main class="app">
@@ -30,7 +30,7 @@
       <h1>Ta bilde av teststripen</h1>
       <p>Legg stripen på en lys, nøytral bakgrunn.<br>
       Appen finner teststripen automatisk i bildet.<br>
-      <strong>Du trenger ikke holde den inne i rammer.</strong></p>
+      <strong>Ingen faste firkanter eller rammer trengs.</strong></p>
     </div>
 
     <div class="camera-panel">
@@ -39,9 +39,7 @@
       <div class="canvas-wrap">
         <canvas id="photoCanvas" width="800" height="900"></canvas>
         <div id="emptyState" class="empty-state">
-          <div class="focus-ring">
-            <div class="camera-icon">📷</div>
-          </div>
+          <div class="camera-icon">📷</div>
           <strong>Ingen teststripe valgt</strong>
           <span>Trykk «Ta bilde» eller «Velg bilde»</span>
         </div>
@@ -134,7 +132,7 @@
   <section id="screenSettings" class="screen">
     <div class="intro compact">
       <h1>Innstillinger</h1>
-      <p>Spa Water Test v0.6</p>
+      <p>Spa Water Test v0.6.1</p>
     </div>
     <div class="card setting-row">
       <div>
@@ -157,6 +155,6 @@
   </nav>
 </main>
 
-<script src="./app.js"></script>
+<script src="./app.js?v=061"></script>
 </body>
 </html>

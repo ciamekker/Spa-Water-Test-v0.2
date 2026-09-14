@@ -1,27 +1,27 @@
-# Spa Water Test v0.6 – GitHub Pages
+# Spa Water Test v0.6.1 – GitHub Pages
 
-Klar for GitHub Pages.
+Denne versjonen fjerner de synlige firkantene/rammene i startsiden.
+
+## Hvis du fortsatt ser de gamle firkantene
+Det skyldes nesten alltid gammel cache / gammel PWA på telefonen.
+
+Gjør dette:
+1. Slett den gamle installerte appen fra telefonen.
+2. Åpne GitHub Pages-siden i Chrome.
+3. Trykk på hengelås / nettstedsinfo → Nettstedsinnstillinger → Slett data.
+4. Last siden på nytt.
+5. Installer appen på nytt.
 
 ## Last opp
 1. Pakk ut ZIP-filen.
 2. Åpne GitHub-repositoriet ditt.
 3. Velg **Add file → Upload files**.
-4. Last opp FILENE i denne mappen slik at `index.html` ligger direkte i roten av repoet.
+4. Last opp filene slik at `index.html` ligger direkte i roten av repoet.
 5. Commit changes.
 6. Gå til **Settings → Pages**.
 7. Velg **Deploy from a branch**, `main`, `/ (root)`, og Save.
-8. Åpne GitHub Pages-adressen på Android i Chrome.
 
-## Nytt i v0.6
-- Ingen fast ramme for teststripen.
-- Automatisk søk etter de tre fargefeltene i hele bildet.
-- Stripen kan ligge vannrett eller loddrett og trenger ikke være i midten.
-- Manuell fallback: trykk på de tre fargefeltene hvis automatisk søk bommer.
-- Lokal fargeanalyse med enkel hvitbalansekorreksjon.
-- Historikk lagres lokalt.
-- PWA/installasjon på Android.
-
-## Kalibrering
-Skala: Cl 0 / 0,5 / 1 / 3 / 5 mg/l, pH 6,8 / 7,2 / 7,6 / 8,0 / 8,4 og TA 0 / 80 / 120 / 180 / 240 mg/l.
-
-Kamera, lys og skjygger kan påvirke fargemålingen. Bruk jevnt, nøytralt lys.
+## Endringer
+- Fjernet firkantene i tomvisningen.
+- Kun tekst + kameraikon før bilde er valgt.
+- Ny cache-versjon for å tvinge frem oppdatering.
