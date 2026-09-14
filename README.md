@@ -1,22 +1,27 @@
-# Spa Water Test – PWA prototype v0.2
+# Spa Water Test v0.6 – GitHub Pages
 
-Dette er en første fungerende prototype som kan kjøres i nettleser på Android og installeres som en PWA.
+Klar for GitHub Pages.
 
-## Funksjoner
-- Ta bilde med mobilkamera eller velg fra galleri
-- Leser tre definerte fargefelt på en vertikal 3-i-1-teststripe
-- Estimerer fritt klor, pH og total alkalinitet
-- Viser anbefalt område og status
-- Lagrer historikk lokalt på telefonen
-- Kan installeres på Android fra nettleseren
-- Fungerer offline etter første innlasting
+## Last opp
+1. Pakk ut ZIP-filen.
+2. Åpne GitHub-repositoriet ditt.
+3. Velg **Add file → Upload files**.
+4. Last opp FILENE i denne mappen slik at `index.html` ligger direkte i roten av repoet.
+5. Commit changes.
+6. Gå til **Settings → Pages**.
+7. Velg **Deploy from a branch**, `main`, `/ (root)`, og Save.
+8. Åpne GitHub Pages-adressen på Android i Chrome.
 
-## Viktig
-Fargeverdiene i `app.js` er kalibrert fra brukerens eget bilde av teststripe-boksen. Skalaen er Cl 0/0,5/1/3/5 mg/l, pH 6,8/7,2/7,6/8,0/8,4 og TA 0/80/120/180/240 mg/l. Kameraets hvitbalanse og lysforhold kan fortsatt påvirke resultatet.
+## Nytt i v0.6
+- Ingen fast ramme for teststripen.
+- Automatisk søk etter de tre fargefeltene i hele bildet.
+- Stripen kan ligge vannrett eller loddrett og trenger ikke være i midten.
+- Manuell fallback: trykk på de tre fargefeltene hvis automatisk søk bommer.
+- Lokal fargeanalyse med enkel hvitbalansekorreksjon.
+- Historikk lagres lokalt.
+- PWA/installasjon på Android.
 
-## Kjør lokalt
-PWA/service worker krever HTTP/HTTPS. Eksempel:
-`python -m http.server 8080`
-Åpne deretter `http://localhost:8080` i nettleseren.
+## Kalibrering
+Skala: Cl 0 / 0,5 / 1 / 3 / 5 mg/l, pH 6,8 / 7,2 / 7,6 / 8,0 / 8,4 og TA 0 / 80 / 120 / 180 / 240 mg/l.
 
-For ekte Android-bruk bør prosjektet publiseres på HTTPS, f.eks. Netlify, Vercel eller GitHub Pages.
+Kamera, lys og skjygger kan påvirke fargemålingen. Bruk jevnt, nøytralt lys.
