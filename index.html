@@ -1,160 +1,146 @@
 <!doctype html>
 <html lang="no">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#03111f">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="mobile-web-app-capable" content="yes">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#04111f" />
   <title>Spa Water Test</title>
-  <link rel="manifest" href="./manifest.webmanifest?v=061">
-  <link rel="icon" href="./icon-192.png?v=061">
-  <link rel="apple-touch-icon" href="./icon-192.png?v=061">
-  <link rel="stylesheet" href="./styles.css?v=061">
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icon-192.png" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-<main class="app">
-  <header class="topbar">
-    <div class="brand">
-      <div class="brand-drop">💧</div>
-      <div>
-        <div class="brand-title">SPA <span>WATER TEST</span></div>
-        <div class="brand-sub">Smart teststripe-analyse</div>
+  <main class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="drop">💧</div>
+        <div>
+          <h1>SPA <span>WATER TEST</span></h1>
+          <p>Smart teststripe-analyse</p>
+        </div>
       </div>
-    </div>
-    <button id="installBtn" class="install hidden">Installer</button>
-  </header>
+      <button id="installBtn" class="ghost hidden">Installer</button>
+    </header>
 
-  <section id="screenTest" class="screen active">
-    <div class="intro">
-      <h1>Ta bilde av teststripen</h1>
-      <p>Legg stripen på en lys, nøytral bakgrunn.<br>
-      Appen finner teststripen automatisk i bildet.<br>
-      <strong>Ingen faste firkanter eller rammer trengs.</strong></p>
-    </div>
+    <section id="screenTest" class="screen active">
+      <div class="hero">
+        <h2>Ta bilde av teststripen</h2>
+        <p>Legg stripen på en lys, nøytral bakgrunn og plasser den loddrett i rammen.</p>
+      </div>
 
-    <div class="camera-panel">
-      <div class="auto-pill"><span>✦</span> Automatisk gjenkjenning</div>
-
-      <div class="canvas-wrap">
-        <canvas id="photoCanvas" width="800" height="900"></canvas>
-        <div id="emptyState" class="empty-state">
-          <div class="camera-icon">📷</div>
+      <div class="camera-card">
+        <canvas id="previewCanvas" width="720" height="960"></canvas>
+        <div id="placeholder" class="placeholder">
+          <div class="placeholder-icon">📷</div>
           <strong>Ingen teststripe valgt</strong>
           <span>Trykk «Ta bilde» eller «Velg bilde»</span>
         </div>
-        <div id="detectMessage" class="detect-message hidden"></div>
+        <div class="guide">
+          <div class="corner tl"></div><div class="corner tr"></div>
+          <div class="corner bl"></div><div class="corner br"></div>
+          <div class="sample s1"><span>Klor</span></div>
+          <div class="sample s2"><span>pH</span></div>
+          <div class="sample s3"><span>TA</span></div>
+        </div>
       </div>
 
-      <div class="camera-actions">
-        <label class="round-action">
+      <div class="capture-row">
+        <label class="btn secondary">
           <input id="galleryInput" type="file" accept="image/*" hidden>
-          <span class="round-icon">🖼️</span>
-          <small>Velg bilde</small>
+          🖼️ Velg bilde
         </label>
-
-        <label class="shutter" aria-label="Ta bilde">
+        <label class="shutter">
           <input id="cameraInput" type="file" accept="image/*" capture="environment" hidden>
           <span></span>
         </label>
-
-        <button id="redetectBtn" class="round-action buttonlike" disabled>
-          <span class="round-icon">✦</span>
-          <small>Finn på nytt</small>
-        </button>
+        <button id="flashHint" class="btn secondary">⚡ Lys</button>
       </div>
 
-      <button id="analyzeBtn" class="primary full" disabled>Analyser teststripe</button>
-      <button id="manualBtn" class="text-btn hidden">Fant appen feil? Trykk her og marker de 3 fargefeltene selv</button>
-      <p class="hint">Best resultat: jevnt dagslys, ingen sterke skygger og hele stripen synlig.</p>
-    </div>
-  </section>
+      <button id="analyzeBtn" class="btn primary full" disabled>Analyser teststripe</button>
+      <p class="note">Tips: Ta bildet i jevnt dagslys uten sterke skygger eller farget belysning.</p>
+    </section>
 
-  <section id="screenResults" class="screen">
-    <div class="result-ok">
-      <div class="ok-icon">✓</div>
-      <div>
-        <strong>Test analysert</strong>
-        <span id="resultTime"></span>
+    <section id="screenResults" class="screen">
+      <div class="result-head ok">
+        <div class="check">✓</div>
+        <div>
+          <h2>Test analysert</h2>
+          <p id="resultTime"></p>
+        </div>
       </div>
-    </div>
 
-    <div id="resultCards"></div>
+      <div id="resultCards"></div>
 
-    <div id="qualityCard" class="quality">
-      <div class="quality-drop">💧</div>
-      <div>
-        <span>Vannkvalitet</span>
-        <strong id="qualityText">GOD</strong>
-        <p id="qualitySub"></p>
+      <div id="qualityCard" class="quality-card">
+        <div class="bigdrop">💧</div>
+        <div>
+          <span>Vannkvalitet</span>
+          <strong id="qualityText">GOD</strong>
+          <p id="qualitySub">Alle målte verdier er innenfor anbefalt område.</p>
+        </div>
       </div>
-    </div>
 
-    <div class="advice">
-      <strong>👍 Anbefalinger</strong>
-      <p id="adviceText"></p>
-    </div>
-
-    <div class="two-buttons">
-      <button id="saveBtn" class="secondary">💾 Lagre resultat</button>
-      <button id="newTestBtn" class="primary">↻ Ny test</button>
-    </div>
-  </section>
-
-  <section id="screenHistory" class="screen">
-    <div class="intro compact">
-      <h1>Historikk</h1>
-      <p>Lagrede målinger på denne telefonen.</p>
-    </div>
-    <div id="historyList"></div>
-    <button id="clearHistoryBtn" class="danger full">Slett historikk</button>
-  </section>
-
-  <section id="screenTips" class="screen">
-    <div class="intro compact">
-      <h1>Tips</h1>
-      <p>Slik får du mest stabil avlesning.</p>
-    </div>
-    <div class="card">
-      <h3>📷 Bilde</h3>
-      <p>Legg teststripen på en lys grå eller hvit bakgrunn. Hele stripen kan ligge hvor som helst i bildet og kan være vannrett eller loddrett.</p>
-    </div>
-    <div class="card">
-      <h3>✨ Automatisk gjenkjenning</h3>
-      <p>Appen søker etter de tre fargefeltene. Hvis den bommer, kan du velge manuell markering og trykke én gang på hvert av de tre feltene.</p>
-    </div>
-    <div class="card warning">
-      <h3>🧪 Kalibrering</h3>
-      <p>Fargeskalaen er tilpasset teststripe-boksen din: klor 0 / 0,5 / 1 / 3 / 5 mg/l, pH 6,8 / 7,2 / 7,6 / 8,0 / 8,4 og TA 0 / 80 / 120 / 180 / 240 mg/l.</p>
-    </div>
-  </section>
-
-  <section id="screenSettings" class="screen">
-    <div class="intro compact">
-      <h1>Innstillinger</h1>
-      <p>Spa Water Test v0.6.1</p>
-    </div>
-    <div class="card setting-row">
-      <div>
-        <strong>Vis målefarger</strong>
-        <p>Vis RGB-verdi under resultatene.</p>
+      <div class="advice-card">
+        <h3>👍 Anbefalinger</h3>
+        <p id="adviceText">Ingen tiltak nødvendig.</p>
       </div>
-      <input id="debugToggle" type="checkbox">
-    </div>
-    <div class="card">
-      <h3>Om appen</h3>
-      <p>GitHub Pages / PWA-versjon. Kamera og analyse kjøres lokalt på telefonen. Bilder sendes ikke til en server.</p>
-    </div>
-  </section>
 
-  <nav class="bottom-nav">
-    <button data-screen="Test" class="nav active"><span>📷</span><small>Test</small></button>
-    <button data-screen="History" class="nav"><span>▥</span><small>Historikk</small></button>
-    <button data-screen="Tips" class="nav"><span>💧</span><small>Tips</small></button>
-    <button data-screen="Settings" class="nav"><span>⚙️</span><small>Innstillinger</small></button>
-  </nav>
-</main>
+      <div class="action-row">
+        <button id="saveBtn" class="btn secondary">💾 Lagre resultat</button>
+        <button id="newTestBtn" class="btn primary">↻ Ny test</button>
+      </div>
+    </section>
 
-<script src="./app.js?v=061"></script>
+    <section id="screenHistory" class="screen">
+      <div class="hero compact">
+        <h2>Historikk</h2>
+        <p>Lagrede målinger på denne enheten.</p>
+      </div>
+      <div id="historyList" class="history-list"></div>
+      <button id="clearHistoryBtn" class="btn danger full">Slett historikk</button>
+    </section>
+
+    <section id="screenTips" class="screen">
+      <div class="hero compact"><h2>Tips</h2><p>For mer stabil måling</p></div>
+      <div class="info-card">
+        <h3>Best mulig bilde</h3>
+        <ul>
+          <li>Bruk hvit eller lys grå bakgrunn.</li>
+          <li>Unngå LED-lys med sterk fargetone.</li>
+          <li>Hold kameraet rett over stripen.</li>
+          <li>La hele fargefeltet ligge inne i markøren.</li>
+          <li>Les stripen innen tidsvinduet produsenten angir.</li>
+        </ul>
+      </div>
+      <div class="info-card warning">
+        <h3>Kalibrering</h3>
+        <p>Denne versjonen er kalibrert mot referansebildene av fargeskalaen på din egen 3-i-1 teststripe-boks (600 L spa). Appen korrigerer nå forsiktig for hvitbalanse/lys før fargematching. Jevnt dagslys gir fortsatt best resultat.</p>
+      </div>
+    </section>
+
+    <section id="screenSettings" class="screen">
+      <div class="hero compact"><h2>Innstillinger</h2><p>Spa Water Test</p></div>
+      <div class="info-card">
+        <label class="setting">
+          <span>Vis RGB-data ved analyse</span>
+          <input id="debugToggle" type="checkbox">
+        </label>
+      </div>
+      <div class="info-card">
+        <h3>Om</h3>
+        <p>Versjon 0.7.0 – lyskompensert · bildehistorikk · 600 L</p>
+        <p>Skala: Cl 0 / 0,5 / 1 / 3 / 5 · pH 6,8 / 7,2 / 7,6 / 8,0 / 8,4 · TA 0 / 80 / 120 / 180 / 240.</p><p>Fungerer online og kan installeres på Android som en app.</p>
+      </div>
+    </section>
+
+    <nav class="bottom-nav">
+      <button data-screen="Test" class="nav-btn active">📷<span>Test</span></button>
+      <button data-screen="History" class="nav-btn">▥<span>Historikk</span></button>
+      <button data-screen="Tips" class="nav-btn">💧<span>Tips</span></button>
+      <button data-screen="Settings" class="nav-btn">⚙️<span>Innstillinger</span></button>
+    </nav>
+  </main>
+
+  <script src="app.js"></script>
 </body>
 </html>
