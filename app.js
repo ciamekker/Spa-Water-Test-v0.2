@@ -86,6 +86,38 @@ function estimateWhiteBalance(){
 function corrected(rgb){
   return rgb.map((v,i)=>Math.max(0,Math.min(255,Math.round(v*wbGain[i]))));
 }
+
+function patchStats(cx,cy,size=28){
+  const x=Math.max(0,Math.round(cx-size/2)), y=Math.max(0,Math.round(cy-size/2));
+  const w=Math.min(size,canvas.width-x), h=Math.min(size,canvas.height-y);
+  const d=ctx.getImageData(x,y,w,h).data; let r=0,g=0,b=0,n=0,rr=0,gg=0,bb=0;
+  for(let i=0;i<d.length;i+=4){ if(d[i+3]<10)continue; r+=d[i];g+=d[i+1];b+=d[i+2];rr+=d[i]*d[i];gg+=d[i+1]*d[i+1];bb+=d[i+2]*d[i+2];n++; }
+  if(!n)return {rgb:[0,0,0],sd:999}; r/=n;g/=n;b/=n;
+  const v=Math.sqrt(Math.max(0,(rr+gg+bb)/n-(r*r+g*g+b*b)));
+  return {rgb:[Math.round(r),Math.round(g),Math.round(b)],sd:v};
+}
+function autoDetectPads(){
+  wbGain=estimateWhiteBalance();
+  const types=[['chlorine',REF.chlorine],['ph',REF.ph],['ta',REF.ta]], step=12, margin=24;
+  const cand={chlorine:[],ph:[],ta:[]};
+  for(let y=margin;y<canvas.height-margin;y+=step) for(let x=margin;x<canvas.width-margin;x+=step){
+    const st=patchStats(x,y,26); if(st.sd>48) continue; const rgb=corrected(st.rgb);
+    for(const [name,refs] of types){ const m=nearest(rgb,refs); if(m.d<30) cand[name].push({x,y,rgb,d:m.d,m}); }
+  }
+  for(const k of Object.keys(cand)) cand[k]=cand[k].sort((a,b)=>a.d-b.d).slice(0,45);
+  let best=null;
+  for(const c of cand.chlorine) for(const p of cand.ph) for(const t of cand.ta){
+    const d1=Math.hypot(c.x-p.x,c.y-p.y), d2=Math.hypot(p.x-t.x,p.y-t.y), d3=Math.hypot(c.x-t.x,c.y-t.y);
+    if(d1<45||d2<45||d1>320||d2>320) continue;
+    const spacing=Math.abs(d1-d2)/Math.max(d1,d2); if(spacing>.38) continue;
+    const straight=Math.abs((c.x-p.x)*(t.y-p.y)-(c.y-p.y)*(t.x-p.x))/(d1*d2); if(straight>.22) continue;
+    if(Math.abs(d3-(d1+d2))>Math.max(24,.18*(d1+d2))) continue;
+    const score=c.d+p.d+t.d+spacing*28+straight*45; if(!best||score<best.score) best={c,p,t,score};
+  }
+  if(!best || best.score>72) return null;
+  return best;
+}
+
 function canvasImageBlob(){
   return new Promise(resolve=>canvas.toBlob(resolve,"image/jpeg",0.72));
 }
@@ -122,19 +154,19 @@ $("#galleryInput").addEventListener("change",e=>loadFile(e.target.files[0]));
 $("#flashHint").addEventListener("click",()=>alert("Bruk telefonens vanlige kamerablits hvis bildet blir for mørkt. PWA kan ikke styre blits på alle Android-modeller."));
 
 $("#analyzeBtn").addEventListener("click",()=>{
-  // Sampling coordinates mirror the visual guide.
-  const x=canvas.width*.5;
-  wbGain=estimateWhiteBalance();
-  const rgb1=corrected(averageRegion(x,canvas.height*.33,100,70));
-  const rgb2=corrected(averageRegion(x,canvas.height*.50,100,70));
-  const rgb3=corrected(averageRegion(x,canvas.height*.67,100,70));
-  const c=nearest(rgb1,REF.chlorine), p=nearest(rgb2,REF.ph), t=nearest(rgb3,REF.ta);
+  const found=autoDetectPads();
+  if(!found){
+    alert("Kan ikke lese teststrimmelen sikkert. Sørg for at hele strimmelen og alle tre fargefeltene er synlige, med jevnt lys.");
+    return;
+  }
+  const rgb1=found.c.rgb, rgb2=found.p.rgb, rgb3=found.t.rgb;
+  const c=found.c.m, p=found.p.m, t=found.t.m;
   lastResult={
     ts:new Date().toISOString(),
     chlorine:{value:c.value,rgb:rgb1,status:statusFor("chlorine",c.value)},
     ph:{value:p.value,rgb:rgb2,status:statusFor("ph",p.value)},
     ta:{value:t.value,rgb:rgb3,status:statusFor("ta",t.value)},
-    wb:wbGain.map(v=>+v.toFixed(3))
+    wb:wbGain.map(v=>+v.toFixed(3)), confidence: Math.max(0,Math.round(100-(found.score/72)*45))
   };
   renderResults(lastResult);
   showScreen("Results");
