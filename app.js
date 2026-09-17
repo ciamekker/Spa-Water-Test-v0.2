@@ -102,19 +102,19 @@ function autoDetectPads(){
   const cand={chlorine:[],ph:[],ta:[]};
   for(let y=margin;y<canvas.height-margin;y+=step) for(let x=margin;x<canvas.width-margin;x+=step){
     const st=patchStats(x,y,26); if(st.sd>48) continue; const rgb=corrected(st.rgb);
-    for(const [name,refs] of types){ const m=nearest(rgb,refs); if(m.d<30) cand[name].push({x,y,rgb,d:m.d,m}); }
+    for(const [name,refs] of types){ const m=nearest(rgb,refs); if(m.d<62) cand[name].push({x,y,rgb,d:m.d,m}); }
   }
   for(const k of Object.keys(cand)) cand[k]=cand[k].sort((a,b)=>a.d-b.d).slice(0,45);
   let best=null;
   for(const c of cand.chlorine) for(const p of cand.ph) for(const t of cand.ta){
     const d1=Math.hypot(c.x-p.x,c.y-p.y), d2=Math.hypot(p.x-t.x,p.y-t.y), d3=Math.hypot(c.x-t.x,c.y-t.y);
-    if(d1<45||d2<45||d1>320||d2>320) continue;
-    const spacing=Math.abs(d1-d2)/Math.max(d1,d2); if(spacing>.38) continue;
-    const straight=Math.abs((c.x-p.x)*(t.y-p.y)-(c.y-p.y)*(t.x-p.x))/(d1*d2); if(straight>.22) continue;
-    if(Math.abs(d3-(d1+d2))>Math.max(24,.18*(d1+d2))) continue;
-    const score=c.d+p.d+t.d+spacing*28+straight*45; if(!best||score<best.score) best={c,p,t,score};
+    if(d1<30||d2<30||d1>420||d2>420) continue;
+    const spacing=Math.abs(d1-d2)/Math.max(d1,d2); if(spacing>.55) continue;
+    const straight=Math.abs((c.x-p.x)*(t.y-p.y)-(c.y-p.y)*(t.x-p.x))/(d1*d2); if(straight>.32) continue;
+    if(Math.abs(d3-(d1+d2))>Math.max(38,.28*(d1+d2))) continue;
+    const score=c.d+p.d+t.d+spacing*18+straight*30; if(!best||score<best.score) best={c,p,t,score};
   }
-  if(!best || best.score>72) return null;
+  if(!best || best.score>175) return null;
   return best;
 }
 
@@ -156,7 +156,7 @@ $("#flashHint").addEventListener("click",()=>alert("Bruk telefonens vanlige kame
 $("#analyzeBtn").addEventListener("click",()=>{
   const found=autoDetectPads();
   if(!found){
-    alert("Kan ikke lese teststrimmelen sikkert. Sørg for at hele strimmelen og alle tre fargefeltene er synlige, med jevnt lys.");
+    alert("Fant ikke tre målefelt sikkert. Prøv å ha alle tre fargefeltene synlige og unngå kraftig gjenskinn.");
     return;
   }
   const rgb1=found.c.rgb, rgb2=found.p.rgb, rgb3=found.t.rgb;
@@ -166,7 +166,7 @@ $("#analyzeBtn").addEventListener("click",()=>{
     chlorine:{value:c.value,rgb:rgb1,status:statusFor("chlorine",c.value)},
     ph:{value:p.value,rgb:rgb2,status:statusFor("ph",p.value)},
     ta:{value:t.value,rgb:rgb3,status:statusFor("ta",t.value)},
-    wb:wbGain.map(v=>+v.toFixed(3)), confidence: Math.max(0,Math.round(100-(found.score/72)*45))
+    wb:wbGain.map(v=>+v.toFixed(3)), confidence: Math.max(0,Math.round(100-(found.score/175)*55))
   };
   renderResults(lastResult);
   showScreen("Results");
