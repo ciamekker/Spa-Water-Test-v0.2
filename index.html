@@ -1,140 +1,1507 @@
 <!doctype html>
 <html lang="no">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <meta name="theme-color" content="#04111f" />
-  <title>Spa Water Test</title>
-  <link rel="manifest" href="manifest.webmanifest" />
-  <link rel="icon" href="icon-192.png" />
-  <link rel="stylesheet" href="styles.css" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+  <meta name="theme-color" content="#0b1118">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="e2008 CAN">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="format-detection" content="telephone=no">
+  <title>e-2008 CAN Logger</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="icon" href="icon-192.png">
+  <style>
+
+:root{
+  color-scheme:dark;
+  --bg:#080d13;--bg2:#0d141d;--panel:#101923;--panel2:#0b131c;
+  --line:#1d2b39;--text:#eef5fb;--muted:#71869a;--blue:#1477ff;--blue2:#4aa1ff;
+  --green:#69e294;--amber:#ffc76b;--red:#ff7285;--radius:22px;
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{background:var(--bg)}
+body{margin:0;background:
+radial-gradient(900px 460px at 50% -120px,rgba(20,119,255,.23),transparent 62%),
+linear-gradient(180deg,#0a1017 0%,#080d13 72%);color:var(--text);min-height:100vh}
+button,input{font:inherit}
+button{border:0;cursor:pointer;color:inherit}
+.app-shell{min-height:100vh;padding-bottom:88px}
+.topbar{position:sticky;top:0;z-index:30;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px max(16px,env(safe-area-inset-right)) 12px max(16px,env(safe-area-inset-left));padding-top:max(12px,env(safe-area-inset-top));background:rgba(8,13,19,.78);backdrop-filter:blur(22px);border-bottom:1px solid rgba(255,255,255,.06)}
+.brand{display:flex;align-items:center;gap:11px}.brand-icon{width:42px;height:42px;border-radius:13px;box-shadow:0 6px 18px rgba(20,119,255,.25)}
+.eyebrow,.section-kicker,.hero-kicker,.event-label{font-size:.65rem;letter-spacing:.15em;font-weight:800;color:#63809b}
+.brand h1{font-size:1.08rem;margin:2px 0 0;letter-spacing:-.02em}
+.top-actions{display:flex;gap:8px;align-items:center}.install-btn{display:flex;align-items:center;gap:7px;background:#162436;border:1px solid #29425d;padding:9px 12px;border-radius:13px;font-weight:750;font-size:.8rem}.btn-icon{font-size:1rem}
+.status-chip{display:flex;align-items:center;gap:7px;border-radius:999px;padding:9px 11px;font-weight:750;font-size:.73rem;background:#241820;color:#ff9cab}.status-chip.on{background:#10271a;color:#78eca2}.dot{width:7px;height:7px;border-radius:50%;background:currentColor;box-shadow:0 0 10px currentColor}
+main{width:min(1400px,100%);margin:auto;padding:18px max(14px,env(safe-area-inset-right)) 20px max(14px,env(safe-area-inset-left))}
+.hero{display:grid;grid-template-columns:1.3fr .9fr;gap:18px;align-items:stretch;background:linear-gradient(135deg,rgba(20,119,255,.16),rgba(16,25,35,.92) 48%,rgba(12,20,29,.96));border:1px solid rgba(70,145,229,.24);border-radius:28px;padding:26px;overflow:hidden;position:relative}
+.hero:after{content:"";position:absolute;right:-90px;top:-120px;width:320px;height:320px;border-radius:50%;border:1px solid rgba(87,157,236,.12);box-shadow:0 0 0 48px rgba(68,137,217,.035),0 0 0 98px rgba(68,137,217,.025)}
+.hero-copy{position:relative;z-index:1}.hero h2{font-size:clamp(1.9rem,5vw,3.7rem);letter-spacing:-.055em;line-height:.96;margin:10px 0 12px;max-width:700px}.hero p{margin:0;color:#94a7b9;max-width:630px;line-height:1.55}
+.hero-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.primary,.secondary,.glass,.mini-action{border-radius:13px;font-weight:780}.primary{background:linear-gradient(180deg,#2486ff,#1069dc);box-shadow:0 8px 22px rgba(14,105,222,.25)}.secondary{background:#182330;border:1px solid #273748}.glass{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10)}.big{padding:13px 18px}
+button:disabled{opacity:.38;cursor:not-allowed;box-shadow:none}
+.hero-cluster{position:relative;z-index:1;display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.gauge-card{min-height:108px;border-radius:20px;padding:15px;background:rgba(7,13,20,.72);border:1px solid rgba(255,255,255,.08);display:flex;flex-direction:column;justify-content:center}.gauge-card:first-child{grid-column:span 2}.gauge-card span{font-size:.74rem;color:#7890a6}.gauge-card strong{font-size:2.15rem;line-height:1;margin-top:7px}.gauge-card small{color:#637b91;margin-top:4px}.gauge-card.accent{background:linear-gradient(145deg,rgba(22,86,58,.55),rgba(8,20,18,.78));border-color:rgba(105,226,148,.17)}
+.platform-banner{margin-top:12px;display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:18px;background:#0e1822;border:1px solid #1c2a38}.platform-icon{width:38px;height:38px;display:grid;place-items:center;border-radius:12px;background:#182a3d;color:#7ab8ff;font-weight:900}.platform-copy{display:flex;flex-direction:column;min-width:0;flex:1}.platform-copy strong{font-size:.83rem}.platform-copy span{font-size:.73rem;color:#758b9f;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mini-action{background:#172535;border:1px solid #243b52;padding:8px 11px;font-size:.72rem}
+.quickbar{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}.quick-card{display:flex;gap:11px;align-items:center;text-align:left;padding:13px;background:#101923;border:1px solid #1e2c3a;border-radius:17px}.quick-icon{display:grid;place-items:center;width:37px;height:37px;border-radius:11px;background:#172637;color:#70b3ff;font-size:1rem;flex:none}.quick-card strong,.quick-card small{display:block}.quick-card strong{font-size:.82rem}.quick-card small{font-size:.68rem;color:#687f94;margin-top:2px}
+.metrics-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;margin:12px 0;border:1px solid #1c2936;background:#1c2936;border-radius:18px;overflow:hidden}.metrics-strip div{background:#0f1720;padding:12px 14px}.metrics-strip span,.metrics-strip strong{display:block}.metrics-strip span{font-size:.66rem;color:#657b8e}.metrics-strip strong{font-size:.8rem;margin-top:3px}
+.app-panel{margin-top:12px;background:linear-gradient(180deg,#101923,#0d151e);border:1px solid #1d2b39;border-radius:24px;padding:16px;box-shadow:0 18px 50px rgba(0,0,0,.16)}
+.hidden{display:none!important}.section-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin-bottom:14px}.section-head.split{align-items:center}.section-head h3{font-size:1.25rem;margin:2px 0}.section-head p{margin:0;color:#6f8498;font-size:.78rem}.search{min-width:190px;background:#091019;color:#edf4fa;border:1px solid #223447;border-radius:13px;padding:10px 12px;outline:none}.search:focus{border-color:#337ecb;box-shadow:0 0 0 3px rgba(42,133,225,.12)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:9px}.tile{background:#0a121b;border:1px solid #192838;border-radius:17px;padding:13px;min-height:105px}.tile .name{color:#8297aa;font-size:.73rem}.tile .value{font-size:1.5rem;font-weight:840;margin-top:7px;letter-spacing:-.03em}.tile .value small{font-size:.66rem;color:#71869a;font-weight:650}.tile .meta{color:#435b70;font-size:.62rem;margin-top:8px}
+.inline-actions,.filters,.export-row,.event-buttons,.custom-event{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.inline-actions button,.export-row button,.eventBtn,.custom-event button{padding:9px 12px}
+.control-surface{display:grid;gap:10px}.filters{padding:11px;border-radius:16px;background:#0a121b;border:1px solid #182635}.toggle{display:flex;align-items:center;gap:7px;color:#8498aa;font-size:.76rem}.toggle input{display:none}.toggle span{width:34px;height:20px;border-radius:999px;background:#263545;position:relative}.toggle span:after{content:"";position:absolute;width:14px;height:14px;border-radius:50%;background:#9eb0bf;left:3px;top:3px;transition:.18s}.toggle input:checked+span{background:#176fda}.toggle input:checked+span:after{left:17px;background:white}
+.eventbar{padding:12px;border-radius:16px;background:#0b141d;border:1px solid #1b2a39}.event-buttons{margin-top:8px}.eventBtn{background:#182839;border-radius:11px;font-weight:750}.custom-event{margin-top:8px}.custom-event input{flex:1;min-width:160px;background:#081018;color:white;border:1px solid #233649;border-radius:11px;padding:9px 11px}
+.sniff-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:11px 0}.sniff-summary div{background:#09111a;border:1px solid #172535;border-radius:15px;padding:11px}.sniff-summary span,.sniff-summary strong{display:block}.sniff-summary span{font-size:.65rem;color:#60788e}.sniff-summary strong{font-size:1rem;margin-top:3px}
+.table-wrap{overflow:auto;margin-top:10px;border:1px solid #1c2b39;border-radius:16px}.can-table{width:100%;border-collapse:collapse;font-size:.73rem;min-width:850px}.can-table th,.can-table td{padding:9px 10px;border-bottom:1px solid #182532;text-align:left;white-space:nowrap}.can-table th{position:sticky;top:0;background:#0c151e;color:#72889b;z-index:1}.can-table tr.changed{background:#112119}.byte{display:inline-block;min-width:24px;text-align:center;padding:3px 4px;margin-right:2px;border-radius:5px;background:#15212c}.byte.changed{background:#573b16;color:#ffd486}.byte.active{outline:1px solid #337ecb}.activity{display:flex;gap:2px;align-items:flex-end;height:22px}.activity i{display:block;width:9px;background:#5d748a;border-radius:2px 2px 0 0}
+.candidate-box{margin-top:12px;background:#09121a;border:1px solid #182735;border-radius:15px;padding:11px}.candidate-box summary{font-weight:800}.candidate-box>p{font-size:.72rem;color:#6b8296}.candidate{padding:8px;border-bottom:1px solid #172535}.tag{display:inline-block;padding:2px 6px;border-radius:999px;background:#17304a;color:#8bc6ff;font-size:.62rem;margin-left:5px}
+pre{background:#060b10;border:1px solid #172432;border-radius:16px;min-height:300px;max-height:520px;overflow:auto;padding:13px;color:#9ad5ff;white-space:pre-wrap;font-size:.72rem}
+.install-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:11px}.install-card{display:flex;gap:13px;padding:16px;border-radius:19px;background:#09121b;border:1px solid #1b2a39}.install-card.recommended{background:linear-gradient(145deg,rgba(20,119,255,.11),#09121b);border-color:#234e78}.os-icon{width:48px;height:48px;border-radius:15px;display:grid;place-items:center;font-size:1.2rem;font-weight:900;flex:none}.os-icon.android{background:#123726;color:#71e69d}.os-icon.apple{background:#252a30;color:#edf2f6}.install-card h4{margin:5px 0 7px;font-size:1.1rem}.install-card p{margin:0 0 13px;color:#778da1;font-size:.77rem;line-height:1.5}.install-card button{padding:10px 13px}.badge{display:inline-block;font-size:.58rem;letter-spacing:.08em;font-weight:850;color:#6be89a;background:#123323;border-radius:999px;padding:4px 7px}.badge.neutral{color:#a8bad0;background:#1b2733}
+.compat-card{display:flex;gap:12px;margin-top:11px;padding:14px;border-radius:18px;background:#18150d;border:1px solid #3a311c}.compat-symbol{display:grid;place-items:center;width:38px;height:38px;border-radius:12px;background:#332710;color:#ffc96d;font-weight:900;flex:none}.compat-card strong{font-size:.82rem}.compat-card p{margin:4px 0 0;color:#9a8c6f;font-size:.73rem;line-height:1.48}
+.bottom-nav{position:fixed;z-index:40;left:50%;bottom:max(9px,env(safe-area-inset-bottom));transform:translateX(-50%);width:min(560px,calc(100% - 20px));display:grid;grid-template-columns:repeat(4,1fr);padding:6px;background:rgba(11,17,24,.88);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.10);border-radius:20px;box-shadow:0 20px 50px rgba(0,0,0,.45)}.nav-item{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 5px;border-radius:14px;background:transparent;color:#647b90}.nav-item span{font-size:1rem;font-weight:800}.nav-item small{font-size:.62rem;font-weight:750}.nav-item.active{background:#172535;color:#80bbff}
+.modal{position:fixed;z-index:100;inset:0}.modal-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.66);backdrop-filter:blur(8px)}.modal-sheet{position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:min(620px,100%);background:#101923;border:1px solid #2a3a49;border-radius:26px 26px 0 0;padding:12px 18px max(20px,env(safe-area-inset-bottom));box-shadow:0 -20px 60px rgba(0,0,0,.5)}.sheet-handle{width:42px;height:4px;border-radius:999px;background:#314152;margin:0 auto 12px}.close-modal{position:absolute;right:14px;top:14px;width:34px;height:34px;border-radius:50%;background:#1a2734;font-size:1.25rem}.modal-sheet h3{margin:3px 0 7px}.modal-sheet p,.modal-sheet li{color:#8498aa;font-size:.8rem;line-height:1.55}.install-steps{display:grid;gap:8px;padding:0;margin:14px 0;counter-reset:step}.install-step{display:flex;gap:10px;align-items:flex-start;padding:11px;background:#0b131c;border-radius:14px}.install-step:before{counter-increment:step;content:counter(step);display:grid;place-items:center;flex:none;width:27px;height:27px;border-radius:9px;background:#17375b;color:#92c7ff;font-weight:850}.modal-sheet .primary{padding:11px 14px}
+.toast{position:fixed;z-index:120;left:50%;bottom:98px;transform:translateX(-50%);background:#192635;border:1px solid #2a3d50;color:#eef5fb;border-radius:13px;padding:10px 14px;font-size:.77rem;box-shadow:0 12px 36px rgba(0,0,0,.38)}
+@media(max-width:820px){
+  .hero{grid-template-columns:1fr;padding:20px}.hero-cluster{grid-template-columns:repeat(3,1fr)}.gauge-card:first-child{grid-column:auto}.gauge-card{min-height:92px}.gauge-card strong{font-size:1.7rem}
+  .quickbar{grid-template-columns:repeat(2,1fr)}.install-grid{grid-template-columns:1fr}.top-actions .install-btn{display:none}
+}
+@media(max-width:560px){
+  main{padding-top:10px}.topbar{padding-left:12px;padding-right:12px}.brand-icon{width:38px;height:38px}.brand h1{font-size:1rem}.status-chip{font-size:.68rem;padding:8px 9px}
+  .hero{padding:18px;border-radius:22px}.hero h2{font-size:2rem}.hero p{font-size:.8rem}.hero-actions .big{flex:1}.hero-cluster{gap:7px}.gauge-card{padding:10px;border-radius:16px}.gauge-card span{font-size:.62rem}.gauge-card strong{font-size:1.35rem}.gauge-card small{font-size:.6rem}
+  .platform-copy span{max-width:190px}.quick-card{padding:11px}.quick-icon{width:34px;height:34px}.metrics-strip{grid-template-columns:repeat(2,1fr)}
+  .app-panel{padding:13px;border-radius:20px}.section-head{align-items:stretch;flex-direction:column}.section-head.split{align-items:stretch}.search{width:100%;min-width:0}
+  .sniff-summary{grid-template-columns:repeat(2,1fr)}.install-card{padding:13px}.os-icon{width:42px;height:42px}.bottom-nav{width:calc(100% - 14px);bottom:max(6px,env(safe-area-inset-bottom))}
+}
+@media(display-mode:standalone){.install-btn{display:none!important}.platform-banner{margin-top:10px}}
+
+
+.local-file-notice{
+  position:sticky;top:0;z-index:200;
+  display:flex;justify-content:center;gap:8px;align-items:center;
+  padding:8px 12px;background:#332711;border-bottom:1px solid #6b531f;
+  color:#ffd078;font-size:.72rem;text-align:center
+}
+.local-file-notice span{color:#c8ab72}
+@media(max-width:560px){
+  .local-file-notice{flex-direction:column;gap:1px}
+}
+
+</style>
 </head>
 <body>
-  <main class="app-shell">
-    <header class="topbar">
-      <div class="brand">
-        <div class="drop">💧</div>
+
+<div id="localFileNotice" class="local-file-notice hidden">
+  <strong>Lokal forhåndsvisning</strong>
+  <span>GUI fungerer, men Bluetooth/CAN og app-installasjon krever HTTPS.</span>
+</div>
+
+<div class="app-shell">
+
+  <header class="topbar">
+    <div class="brand">
+      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAIAAADdvvtQAAAGhklEQVR4nO2dP27cVhCHV0kaQ4CLQPZCbTrdQLcxAqRRCl8hcpMDpHETwMhtfAN1bgMLhjuXBlIQWDAUV7t88+bPj/y+SlpIy3kzH+c9cknuxYuXr3YArfyQHQBog0BgAoHABAKBCQQCEwgEJhAITCAQmEAgMIFAYAKBwAQCgQkEAhMIBCYQCEz8lB1AFa5ubpf+y5eHjx6RaHGxwQvKGlw5n61ZtRWBTkrTUHiP95RjzQIdK7BrXVM2msgKBZotYUr96kTix3oEelqtUqUqHl4zaxBoUpvihdGK9iTaAukWQzfyCaoCjQugm/2d/kD0BFLP+Cy6g1ISSDfLZ6I4QA2BFDPbjNZgBQQ6JLR+NjuiMurSAqkk0Y/6Gagr0OXdY3YItfj2/nV2CDOUEwhvTlLKpCoC4U0DFUzKFwh1jORqlHxJK/bYyc1hpkDY04vETOZMYajjRPx0ltCBsMeP+NxGC4Q93gRnOFQg7IkhMs/cWAgm4gSi/UQSlu0ggbAnnpicRwiEPVkEZJ41EJhwF4j2k4t3/ulAYAKBwISvQMxfFXCtAh0ITCAQmHAUiPmrDn618BLI9TFy0IBTRZjCwISLQLSfmnjUpb9AQ5Rl76TcLENFujvEFAYmOgtE+6mMRxOiA4GJngLRfurTvQnRgcBEN4FoPyr0bUJ0IDDRRyDajxYdmxAdCEx0EIj2o0ivJkQHAhNWgfjcVB1jBft0IOYvRbpUbXNfuvvp/rvr+/9y/6Pr+1fD1IHkls/e9sRsoiP2pTSLaDCxIYHCeoNWEzLSLpDc/AWzGGexrXSg4K6wnSa0CYFSyrkRhzYhEPjReB5IaAH06f571rmZxE0v4svDx6ub26ub24aCrrwDpc8j6QF4s3KBwJs1C1Rk7y8ShhMtAgktgOBMms8GrbYDldrvSwXTl3UKVLBgBUPqwjoFgjBWKFDZfb1sYBbWJlDxIhUPr4G1CQTBLBao8jG8xP5dNsi2I3k6EJiQvKi+7E58Jsfil/jkdYKYQG3qqAg3xKmlkdIUpuKBEa1hygiklVYjQoPVEEgoob1QGbKAQCqp7I7EwAUEgspUF0hiL/Sj/vCrCwTFQSAwgUBgAoHABAKBCQQCEwgEJhYL5PTFd5BO26WCdCAwgUBgAoHABAKBCQQCE2LXRE/Y76/Hv37+/G9WJIsQDXuWlg5U4Uh+v7+elOHYi6UoG3bz7X6SU9jz6U4vxjFEw34evSnsnETv99cd54V3Xz+Mf/3j518b3iQ+7BjEOtD5u2mvHXpiz+wrHYOR60ONAoUtg7TusutOzPAtzztQ6kBL984ie7No2GciINBmm5DEwAUE2omksi8qQ24/CrM8H78BlYQ28/vDn4ef3339sNv9FrNd4wOfNDrQ6hnbM/Dm7d8pkSxFSaDLu8dFf1/knEqRMJwwnUgMnsWW0mXWe/PW650rYH9goVIH2i1pQkvblSulgulLn48yIpvQ5d3jt/evT/7N7OuThcU/fwUtVHfnhR1Ml/PA1g6UMnk9v0Ofac/sK67U7EPGCup9mDowFGOyT9ep0LFWdzxsjWOup3QQKHEpXceYMbOtbjxdVgi71/O+xRbRUI0+AlW4RhHOp+PXDdCBwEQ3gWhCKvT9thM6EJjoKRBNqD7dv2xJ9TzQLvW0MhzoPIWFNaH008qKeHzXG2sgMNFfIFZCNXH6qkmXDlTz8iDwqAtTGJjwEogmVA2nijh2oGrXT20Zv1owhYEJVYGenjY8eSKx4V/CNtQWWwUuXrx85bqBChdPbRzXtYRqB4IiIBCYcBeIY7FcvPNPBwITEQLRhLIIyHxQB8KheGJyHjeF4VAkYdlmDQQmQgWiCcUQmefoDoRD3gRnOGEKwyE/4nPr/lnYM/AxWUeydsvMRTStqBeJmUw+CsMhO7k5zJzCxjCdNVBh96si0AFMOkkFbw6UE+gAJk0o5c2BugLtRncnbvYej/oZKC3QQP0keqAyagGBdv+/Ubp4Qu1oDVZDoAGtzDagOEAlgQYUs3wS3UHpCTSgm/EJ6gNRFWhg8hAZoQLoRj5BW6ABrWJoRXuSNQg08PSRVqVqUzy8ZtYj0IHZh6OlVKtOJH6sUKADxx6z51rClI0msmaBxpx8ZmNDgT3eU46tCDTG9QGgW5BmzBYFmqXBqq25MgsCgQluLAQTCAQmEAhMIBCYQCAwgUBgAoHABAKBCQQCEwgEJhAITCAQmEAgMIFAYOI/cbJ5oBe9yDEAAAAASUVORK5CYII=" alt="" class="brand-icon">
+      <div>
+        <div class="eyebrow">PSA e‑CMP</div>
+        <h1>e‑2008 CAN</h1>
+      </div>
+    </div>
+    <div class="top-actions">
+      <button id="installBtn" class="install-btn">
+        <span class="btn-icon">↓</span><span>Installer app</span>
+      </button>
+      <div id="status" class="status-chip off"><span class="dot"></span>Frakoblet</div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <span class="hero-kicker">CAN LOGGER • UDS • AUTO DECODE</span>
+        <h2>Diagnoseverktøy i lomma.</h2>
+        <p>Peugeot e‑2008 / e‑CMP med Bluetooth Classic ELM327 på støttede Android/Chromium-enheter.</p>
+        <div class="hero-actions">
+          <button id="connectBtn" class="primary big">Koble til adapter</button>
+          <button id="heroInstallBtn" class="glass big">Installer på telefon</button>
+        </div>
+      </div>
+      <div class="hero-cluster">
+        <div class="gauge-card">
+          <span>SOC</span><strong id="heroSoc">—</strong><small>%</small>
+        </div>
+        <div class="gauge-card">
+          <span>HV batteri</span><strong id="heroHv">—</strong><small>V</small>
+        </div>
+        <div class="gauge-card accent">
+          <span>Celle-delta</span><strong id="heroDelta">—</strong><small>mV</small>
+        </div>
+      </div>
+    </section>
+
+    <section id="platformBanner" class="platform-banner">
+      <div class="platform-icon" id="platformIcon">◉</div>
+      <div class="platform-copy">
+        <strong id="platformTitle">Sjekker enheten…</strong>
+        <span id="platformText">Vi velger riktig installasjon og tilkoblingsmetode.</span>
+      </div>
+      <button id="platformAction" class="mini-action">Detaljer</button>
+    </section>
+
+    <section class="quickbar">
+      <button id="initBtn" class="quick-card" disabled>
+        <span class="quick-icon">⚙</span>
+        <span><strong>Initialiser</strong><small>ELM327 / CAN 500k</small></span>
+      </button>
+      <button id="startBtn" class="quick-card" disabled>
+        <span class="quick-icon">▶</span>
+        <span><strong>Live</strong><small>Start diagnostikk</small></span>
+      </button>
+      <button id="stopBtn" class="quick-card" disabled>
+        <span class="quick-icon">■</span>
+        <span><strong>Stopp</strong><small>Avslutt live</small></span>
+      </button>
+      <button id="csvBtn" class="quick-card">
+        <span class="quick-icon">⇩</span>
+        <span><strong>Eksporter</strong><small>Diagnose CSV</small></span>
+      </button>
+    </section>
+
+    <section class="metrics-strip">
+      <div><span>Protokoll</span><strong>ISO 15765‑4</strong></div>
+      <div><span>CAN-buss</span><strong>11-bit • 500 kbit/s</strong></div>
+      <div><span>Profil</span><strong>e‑2008 2020</strong></div>
+      <div><span>Logger</span><strong id="rowCount">0 rader</strong></div>
+    </section>
+
+    <section id="livePanel" class="panel app-panel">
+      <div class="section-head">
         <div>
-          <h1>SPA <span>WATER TEST</span></h1>
-          <p>Automatisk teststripe-analyse</p>
+          <span class="section-kicker">DIAGNOSE</span>
+          <h3>Liveverdier</h3>
+          <p>UDS/OBD-spørringer mot VCU, BMS og OBC.</p>
         </div>
+        <input id="filter" class="search" placeholder="Søk signal…">
       </div>
-      <button id="installBtn" class="ghost hidden">Installer</button>
-    </header>
-
-    <section id="screenTest" class="screen active">
-      <div class="hero">
-        <h2>Ta bilde av teststripen</h2>
-        <p>Legg stripen på en lys, nøytral bakgrunn og plasser den loddrett i rammen.</p>
-      </div>
-
-      <div class="camera-card">
-        <canvas id="previewCanvas" width="720" height="960"></canvas>
-        <div id="placeholder" class="placeholder">
-          <div class="placeholder-icon">📷</div>
-          <strong>Ingen teststripe valgt</strong>
-          <span>Trykk «Ta bilde» eller «Velg bilde»</span>
-        </div>
-        <div class="auto-hint">Legg hele teststrimmelen synlig i bildet</div>
-      </div>
-
-      <div class="capture-row">
-        <label class="btn secondary">
-          <input id="galleryInput" type="file" accept="image/*" hidden>
-          🖼️ Velg bilde
-        </label>
-        <label class="shutter">
-          <input id="cameraInput" type="file" accept="image/*" capture="environment" hidden>
-          <span></span>
-        </label>
-        <button id="flashHint" class="btn secondary">⚡ Lys</button>
-      </div>
-
-      <button id="analyzeBtn" class="btn primary full" disabled>Analyser teststripe</button>
-      <p class="note">Tips: Ta bildet i jevnt dagslys uten sterke skygger eller farget belysning.</p>
+      <div id="tiles" class="tiles"></div>
     </section>
 
-    <section id="screenResults" class="screen">
-      <div class="result-head ok">
-        <div class="check">✓</div>
+    <section id="snifferPanel" class="panel app-panel hidden">
+      <div class="section-head split">
         <div>
-          <h2>Test analysert</h2>
-          <p id="resultTime"></p>
+          <span class="section-kicker">LEARN MODE</span>
+          <h3>Auto Decode</h3>
+          <p>Finn CAN-ID-er og bytes som reagerer på gass, brems, regen og lading.</p>
+        </div>
+        <div class="inline-actions">
+          <button id="sniffStartBtn" disabled class="primary">Start monitor</button>
+          <button id="sniffStopBtn" disabled class="secondary">Stopp</button>
+          <button id="baselineBtn" disabled class="secondary">Baseline</button>
+          <button id="clearSniffBtn" class="secondary">Nullstill</button>
         </div>
       </div>
 
-      <div id="resultCards"></div>
+      <div class="control-surface">
+        <div class="filters">
+          <input id="sniffFilter" class="search" placeholder="Filter CAN-ID, f.eks. 128">
+          <label class="toggle"><input type="checkbox" id="onlyChanged"><span></span>Kun endrede</label>
+          <label class="toggle"><input type="checkbox" id="freezeRows"><span></span>Frys sortering</label>
+        </div>
 
-      <div id="qualityCard" class="quality-card">
-        <div class="bigdrop">💧</div>
+        <div class="eventbar">
+          <span class="event-label">MERK HENDELSE • 5 SEK</span>
+          <div class="event-buttons">
+            <button class="eventBtn" data-event="Gass">Gass</button>
+            <button class="eventBtn" data-event="Brems">Brems</button>
+            <button class="eventBtn" data-event="Lading">Lading</button>
+            <button class="eventBtn" data-event="Regen">Regen</button>
+            <button class="eventBtn" data-event="Gir">Gir</button>
+          </div>
+          <div class="custom-event">
+            <input id="customEvent" placeholder="Egen hendelse">
+            <button id="customEventBtn" class="secondary">Merk</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="sniff-summary">
+        <div><span>Rammer</span><strong id="sniffFrameCount">0</strong></div>
+        <div><span>CAN-ID-er</span><strong id="sniffIdCount">0</strong></div>
+        <div><span>Endret</span><strong id="sniffChangedCount">0</strong></div>
+        <div><span>Hendelse</span><strong id="activeEvent">—</strong></div>
+      </div>
+
+      <div class="export-row">
+        <button id="learnBtn" class="secondary">Eksporter lært JSON</button>
+        <button id="sniffCsvBtn" class="secondary">Eksporter rå CSV</button>
+      </div>
+
+      <div class="table-wrap">
+        <table class="can-table">
+          <thead><tr><th>CAN ID</th><th>Hz</th><th>DLC</th><th>DATA</th><th>Endring</th><th>Byteaktivitet</th><th>Sist</th></tr></thead>
+          <tbody id="sniffBody"></tbody>
+        </table>
+      </div>
+
+      <details class="candidate-box">
+        <summary>Kandidatsignaler</summary>
+        <p>Heuristikk basert på variasjon og hendelsesmerking. Kandidater må verifiseres før de legges inn i databasen.</p>
+        <div id="candidateList"></div>
+      </details>
+    </section>
+
+    <section id="terminalPanel" class="panel app-panel hidden">
+      <div class="section-head split">
         <div>
-          <span>Vannkvalitet</span>
-          <strong id="qualityText">GOD</strong>
-          <p id="qualitySub">Alle målte verdier er innenfor anbefalt område.</p>
+          <span class="section-kicker">ELM327</span>
+          <h3>Terminal</h3>
+          <p>Rå TX/RX-kommunikasjon.</p>
+        </div>
+        <button id="clearBtn" class="secondary">Tøm terminal</button>
+      </div>
+      <pre id="terminal"></pre>
+    </section>
+
+    <section id="installPanel" class="panel app-panel hidden">
+      <div class="section-head">
+        <div>
+          <span class="section-kicker">PWA</span>
+          <h3>Installer på telefon</h3>
+          <p>Appen kan legges på hjemskjermen og åpnes som en vanlig app.</p>
         </div>
       </div>
 
-      <div class="advice-card">
-        <h3>👍 Anbefalinger</h3>
-        <p id="adviceText">Ingen tiltak nødvendig.</p>
+      <div class="install-grid">
+        <article class="install-card recommended">
+          <div class="os-icon android">A</div>
+          <div>
+            <span class="badge">FULL WEB-STØTTE</span>
+            <h4>Android</h4>
+            <p>Åpne i Chrome/Chromium. Når appen er installérbar kan du trykke Installer app direkte.</p>
+            <button id="androidInstallBtn" class="primary">Installer på Android</button>
+          </div>
+        </article>
+
+        <article class="install-card">
+          <div class="os-icon apple">●</div>
+          <div>
+            <span class="badge neutral">HJEMSKJERM</span>
+            <h4>iPhone / iPad</h4>
+            <p>Åpne i Safari → Del → Legg til på Hjem-skjermen → slå på «Åpne som webapp» → Legg til.</p>
+            <button id="iosGuideBtn" class="secondary">Vis iPhone-steg</button>
+          </div>
+        </article>
       </div>
 
-      <div class="action-row">
-        <button id="saveBtn" class="btn secondary">💾 Lagre resultat</button>
-        <button id="newTestBtn" class="btn primary">↻ Ny test</button>
+      <div class="compat-card">
+        <div class="compat-symbol">!</div>
+        <div>
+          <strong>Bluetooth-kompatibilitet</strong>
+          <p>Android/Chromium kan bruke Web Serial når nettleseren og adapteren støtter det. Safari på iPhone/iPad har ikke Web Serial, så selve CAN-tilkoblingen i denne webversjonen er ikke tilgjengelig der. iOS kan fortsatt installere og åpne grensesnittet.</p>
+        </div>
       </div>
     </section>
-
-    <section id="screenHistory" class="screen">
-      <div class="hero compact">
-        <h2>Historikk</h2>
-        <p>Lagrede målinger på denne enheten.</p>
-      </div>
-      <div id="historyList" class="history-list"></div>
-      <button id="clearHistoryBtn" class="btn danger full">Slett historikk</button>
-    </section>
-
-    <section id="screenTips" class="screen">
-      <div class="hero compact"><h2>Tips</h2><p>For mer stabil måling</p></div>
-      <div class="info-card">
-        <h3>Best mulig bilde</h3>
-        <ul>
-          <li>Bruk hvit eller lys grå bakgrunn.</li>
-          <li>Unngå LED-lys med sterk fargetone.</li>
-          <li>Hold kameraet rett over stripen.</li>
-          <li>La hele fargefeltet ligge inne i markøren.</li>
-          <li>Les stripen innen tidsvinduet produsenten angir.</li>
-        </ul>
-      </div>
-      <div class="info-card warning">
-        <h3>Kalibrering</h3>
-        <p>Denne versjonen er kalibrert mot referansebildene av fargeskalaen på din egen 3-i-1 teststripe-boks (600 L spa). Appen korrigerer nå forsiktig for hvitbalanse/lys før fargematching. Jevnt dagslys gir fortsatt best resultat.</p>
-      </div>
-    </section>
-
-    <section id="screenSettings" class="screen">
-      <div class="hero compact"><h2>Innstillinger</h2><p>Spa Water Test</p></div>
-      <div class="info-card">
-        <label class="setting">
-          <span>Vis RGB-data ved analyse</span>
-          <input id="debugToggle" type="checkbox">
-        </label>
-      </div>
-      <div class="info-card">
-        <h3>Om</h3>
-        <p>Versjon 0.7.0 – lyskompensert · bildehistorikk · 600 L</p>
-        <p>Skala: Cl 0 / 0,5 / 1 / 3 / 5 · pH 6,8 / 7,2 / 7,6 / 8,0 / 8,4 · TA 0 / 80 / 120 / 180 / 240.</p><p>Fungerer online og kan installeres på Android som en app.</p>
-      </div>
-    </section>
-
-    <nav class="bottom-nav">
-      <button data-screen="Test" class="nav-btn active">📷<span>Test</span></button>
-      <button data-screen="History" class="nav-btn">▥<span>Historikk</span></button>
-      <button data-screen="Tips" class="nav-btn">💧<span>Tips</span></button>
-      <button data-screen="Settings" class="nav-btn">⚙️<span>Innstillinger</span></button>
-    </nav>
   </main>
 
-  <script src="app.js"></script>
+  <nav class="bottom-nav">
+    <button class="nav-item active" data-tab="livePanel"><span>▦</span><small>Live</small></button>
+    <button class="nav-item" data-tab="snifferPanel"><span>⌁</span><small>Decode</small></button>
+    <button class="nav-item" data-tab="terminalPanel"><span>›_</span><small>Terminal</small></button>
+    <button class="nav-item" data-tab="installPanel"><span>↓</span><small>Installer</small></button>
+  </nav>
+</div>
+
+<div id="installModal" class="modal hidden">
+  <div class="modal-backdrop" data-close-modal></div>
+  <div class="modal-sheet">
+    <div class="sheet-handle"></div>
+    <button class="close-modal" data-close-modal>×</button>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<div id="toast" class="toast hidden"></div>
+
+<script>
+window.PEUGEOT_E2008_DB = {
+  "name": "Peugeot e-2008 / e-CMP 2020 starter diagnostic database",
+  "version": "1.0.0",
+  "vehicle": {
+    "make": "Peugeot",
+    "model": "e-2008",
+    "platform": "e-CMP",
+    "model_year_basis": 2020,
+    "notes": "Starterprofil basert på åpen reverse-engineering for PSA/Stellantis e-CMP/e-208. Verifiser alltid mot egen bil."
+  },
+  "bus": {
+    "protocol": "ISO 15765-4 CAN",
+    "can_id_format": "11-bit",
+    "bitrate": 500000,
+    "elm_protocol": 6
+  },
+  "ecus": [
+    {
+      "key": "vcu",
+      "name": "VCU / drivlinje",
+      "request_id": "6A2",
+      "response_id": "682",
+      "setup": [
+        "ATSH6A2",
+        "ATFCSH6A2",
+        "ATCRA682"
+      ],
+      "signals": [
+        {
+          "did": "D402",
+          "command": "22D4021",
+          "name": "Hastighet",
+          "unit": "km/t",
+          "kind": "u16be",
+          "offset": 0,
+          "factor": 0.00794,
+          "add": 0,
+          "min": 0,
+          "max": 220
+        },
+        {
+          "did": "D8EF",
+          "command": "22D8EF1",
+          "name": "Utetemperatur",
+          "unit": "°C",
+          "kind": "u8",
+          "offset": 0,
+          "factor": 1,
+          "add": 0,
+          "min": -40,
+          "max": 60
+        },
+        {
+          "did": "D8CF",
+          "command": "22D8CF1",
+          "name": "Motor turtall foran",
+          "unit": "rpm",
+          "kind": "u16be",
+          "offset": 0,
+          "factor": 1,
+          "add": 0,
+          "min": 0,
+          "max": 18000
+        }
+      ]
+    },
+    {
+      "key": "bms",
+      "name": "TBMU / BMS",
+      "request_id": "6B4",
+      "response_id": "694",
+      "setup": [
+        "ATSH6B4",
+        "ATFCSH6B4",
+        "ATCRA694"
+      ],
+      "signals": [
+        {
+          "did": "D410",
+          "command": "22D4101",
+          "name": "SOC",
+          "unit": "%",
+          "kind": "u16be",
+          "offset": 0,
+          "factor": 0.001953125,
+          "add": 0,
+          "min": 0,
+          "max": 100
+        },
+        {
+          "did": "D816",
+          "command": "22D8161",
+          "name": "HV batteristrøm",
+          "unit": "A",
+          "kind": "custom",
+          "formula": "(76800 - raw_u32be) * 0.018",
+          "offset": 0,
+          "length": 4,
+          "min": -500,
+          "max": 500,
+          "note": "Fortegn følger kilden: lading/regen positiv, kjøring negativ."
+        },
+        {
+          "did": "D815",
+          "command": "22D8151",
+          "name": "HV batterispenning",
+          "unit": "V",
+          "kind": "u16be",
+          "offset": 0,
+          "factor": 0.0625,
+          "add": 0,
+          "min": 200,
+          "max": 470
+        },
+        {
+          "did": "D86F",
+          "command": "22D86F1",
+          "name": "Laveste cellespenning",
+          "unit": "V",
+          "kind": "u16be",
+          "offset": 0,
+          "factor": 0.001,
+          "add": 0,
+          "min": 2.5,
+          "max": 4.4
+        },
+        {
+          "did": "D870",
+          "command": "22D8701",
+          "name": "Høyeste cellespenning",
+          "unit": "V",
+          "kind": "u16be",
+          "offset": 0,
+          "factor": 0.001,
+          "add": 0,
+          "min": 2.5,
+          "max": 4.4
+        },
+        {
+          "did": "D43C",
+          "command": "22D43C1",
+          "name": "Celle nr. med lavest spenning",
+          "unit": "#",
+          "kind": "u8",
+          "offset": 0,
+          "factor": 1,
+          "add": 1,
+          "min": 1,
+          "max": 108
+        },
+        {
+          "did": "D860",
+          "command": "22D8601",
+          "name": "SOH (gjennomsnitt/fallback)",
+          "unit": "%",
+          "kind": "u16be",
+          "offset": 1,
+          "factor": 0.0625,
+          "add": 0,
+          "min": 0,
+          "max": 100,
+          "note": "Dekoder bruker byte 1-2 i nyttelasten etter DID."
+        },
+        {
+          "did": "D865",
+          "command": "22D8651",
+          "name": "Tilgjengelig energi",
+          "unit": "kWh",
+          "kind": "u16be",
+          "offset": 0,
+          "factor": 0.015625,
+          "add": 0,
+          "min": 0,
+          "max": 60
+        },
+        {
+          "did": "D822",
+          "command": "22D8221",
+          "name": "12 V systemspenning",
+          "unit": "V",
+          "kind": "u16be",
+          "offset": 0,
+          "factor": 0.001,
+          "add": 0,
+          "min": 8,
+          "max": 16
+        },
+        {
+          "did": "D871",
+          "command": "22D8711",
+          "name": "Maks lade-/regen-effekt",
+          "unit": "kW",
+          "kind": "u32be",
+          "offset": 0,
+          "factor": 0.001,
+          "add": 0,
+          "min": 0,
+          "max": 600
+        },
+        {
+          "did": "D873",
+          "command": "22D8731",
+          "name": "Maks utladningseffekt",
+          "unit": "kW",
+          "kind": "u32be",
+          "offset": 0,
+          "factor": 0.001,
+          "add": 0,
+          "min": 0,
+          "max": 600
+        },
+        {
+          "did": "D87B",
+          "command": "22D87B1",
+          "name": "HV isolasjon +",
+          "unit": "kΩ",
+          "kind": "u32be",
+          "offset": 0,
+          "factor": 1,
+          "add": 0,
+          "min": 0,
+          "max": 100000
+        },
+        {
+          "did": "D87C",
+          "command": "22D87C1",
+          "name": "HV isolasjon −",
+          "unit": "kΩ",
+          "kind": "u32be",
+          "offset": 0,
+          "factor": 1,
+          "add": 0,
+          "min": 0,
+          "max": 100000
+        },
+        {
+          "did": "D87D",
+          "command": "22D87D1",
+          "name": "Batteritemperatur min",
+          "unit": "°C",
+          "kind": "u8",
+          "offset": 0,
+          "factor": 1,
+          "add": -40,
+          "min": -40,
+          "max": 90
+        },
+        {
+          "did": "D877",
+          "command": "22D8771",
+          "name": "Batteritemperatur",
+          "unit": "°C",
+          "kind": "u8",
+          "offset": 0,
+          "factor": 1,
+          "add": -40,
+          "min": -40,
+          "max": 90
+        },
+        {
+          "did": "D878",
+          "command": "22D8781",
+          "name": "Batteri temperaturdelta",
+          "unit": "°C",
+          "kind": "u8",
+          "offset": 0,
+          "factor": 1,
+          "add": 0,
+          "min": 0,
+          "max": 60
+        },
+        {
+          "did": "D440",
+          "command": "22D4401",
+          "name": "108 cellespenninger",
+          "unit": "V",
+          "kind": "array_u16be",
+          "offset": 0,
+          "count": 108,
+          "factor": 0.001,
+          "add": 0,
+          "min": 2.5,
+          "max": 4.4
+        },
+        {
+          "did": "D442",
+          "command": "22D4421",
+          "name": "54 batteritemperaturpunkter",
+          "unit": "°C",
+          "kind": "array_u8",
+          "offset": 0,
+          "count": 54,
+          "factor": 1,
+          "add": -40,
+          "min": -40,
+          "max": 90
+        },
+        {
+          "did": "D426",
+          "command": "22D4261",
+          "name": "SOH svakeste blokk",
+          "unit": "%",
+          "kind": "array_min_u16be",
+          "offset": 0,
+          "factor": 0.0625,
+          "add": 0,
+          "min": 50,
+          "max": 110,
+          "note": "Verdier 100–110 % kan forekomme; originaldekoder klamper disse til 100 % før minimum velges."
+        }
+      ]
+    },
+    {
+      "key": "charger",
+      "name": "OBC / DC-DC",
+      "request_id": "590",
+      "response_id": "58F",
+      "setup": [
+        "ATSH590",
+        "ATFCSH590",
+        "ATCRA58F"
+      ],
+      "signals": [
+        {
+          "did": "D854",
+          "command": "22D8541",
+          "name": "Lading aktiv",
+          "unit": "",
+          "kind": "bool_u8_gt0",
+          "offset": 0
+        }
+      ]
+    },
+    {
+      "key": "obd",
+      "name": "OBD-II broadcast",
+      "request_id": "7DF",
+      "response_id": "7E8",
+      "setup": [
+        "ATSH7DF",
+        "ATCRA7E8"
+      ],
+      "signals": [
+        {
+          "did": "0902",
+          "command": "0902",
+          "name": "VIN",
+          "unit": "",
+          "kind": "vin_mode09"
+        }
+      ]
+    }
+  ],
+  "derived": [
+    {
+      "name": "HV effekt",
+      "unit": "kW",
+      "formula": "HV batteristrøm * HV batterispenning / 1000"
+    },
+    {
+      "name": "Celle-delta",
+      "unit": "mV",
+      "formula": "(Høyeste cellespenning - Laveste cellespenning) * 1000"
+    }
+  ],
+  "warnings": [
+    "Kun lesing er implementert. Ingen UDS write/routine-control/security-access.",
+    "Ikke stol på en verdi før den er verifisert på bilen.",
+    "Bluetooth Classic via Web Serial krever kompatibel Chrome/Chromium og HTTPS/localhost."
+  ]
+};
+
+</script>
+<script>
+
+const DB = window.PEUGEOT_E2008_DB;
+
+let port, reader, writer;
+let rxBuffer = "";
+let waitingResolver = null;
+let live = false;
+let logRows = [];
+let currentSetupKey = "";
+
+// Sniffer state
+let sniffing = false;
+let sniffLineBuffer = "";
+let sniffFrames = 0;
+let sniffRawRows = [];
+let sniffMap = new Map();
+let sniffBaseline = new Map();
+let currentEvent = "";
+let currentEventUntil = 0;
+let renderSniffTimer = null;
+
+const enc = new TextEncoder();
+const $ = id => document.getElementById(id);
+const terminal = $("terminal");
+
+function term(s){
+  terminal.textContent += s + "\n";
+  terminal.scrollTop = terminal.scrollHeight;
+}
+function setStatus(on, text){
+  $("status").className = "status-chip " + (on ? "on" : "off");
+  $("status").innerHTML = `<span class="dot"></span>${text}`;
+}
+function allSignals(){
+  return DB.ecus.flatMap(ecu => ecu.signals.map(s => ({...s, ecu})));
+}
+const signalState = new Map();
+
+function renderTiles(){
+  const q = $("filter").value.toLowerCase().trim();
+  const html = allSignals().filter(x => x.name.toLowerCase().includes(q) || x.did.toLowerCase().includes(q)).map(x => {
+    const st = signalState.get(x.ecu.key+":"+x.did) || {};
+    let v = st.display ?? "—";
+    return `<div class="tile">
+      <div class="name">${x.name}</div>
+      <div class="value">${v}${st.display!==undefined && x.unit ? ` <small>${x.unit}</small>` : ""}</div>
+      <div class="meta">${x.ecu.name} • ${x.ecu.request_id}→${x.ecu.response_id} • ${x.command}</div>
+    </div>`;
+  }).join("");
+  $("tiles").innerHTML = html;
+
+  // Hero summary from decoded BMS values
+  const soc = signalState.get("bms:D410")?.value;
+  const hv = signalState.get("bms:D815")?.value;
+  const vmin = signalState.get("bms:D86F")?.value;
+  const vmax = signalState.get("bms:D870")?.value;
+  if(Number.isFinite(soc)) $("heroSoc").textContent = soc.toFixed(1);
+  if(Number.isFinite(hv)) $("heroHv").textContent = hv.toFixed(1);
+  if(Number.isFinite(vmin) && Number.isFinite(vmax)) $("heroDelta").textContent = ((vmax-vmin)*1000).toFixed(0);
+}
+
+$("filter").addEventListener("input", renderTiles);
+$("clearBtn").addEventListener("click", ()=>terminal.textContent="");
+
+// -------- Navigation --------
+function showTab(id){
+  document.querySelectorAll(".panel").forEach(x=>x.classList.add("hidden"));
+  const target=$(id);
+  if(target) target.classList.remove("hidden");
+  document.querySelectorAll(".nav-item").forEach(x=>x.classList.toggle("active",x.dataset.tab===id));
+  try{ history.replaceState(null,"",location.pathname+"?tab="+encodeURIComponent(id)); }catch{}
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+document.querySelectorAll(".nav-item").forEach(btn=>btn.addEventListener("click",()=>showTab(btn.dataset.tab)));
+
+const initialTab=new URLSearchParams(location.search).get("tab");
+if(initialTab && $(initialTab)) showTab(initialTab);
+
+// -------- PWA / platform install --------
+let deferredInstallPrompt = null;
+const ua = navigator.userAgent || "";
+const isIOS = /iPad|iPhone|iPod/.test(ua) || (navigator.platform==="MacIntel" && navigator.maxTouchPoints>1);
+const isAndroid = /Android/i.test(ua);
+const isStandalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+
+function toast(msg){
+  const t=$("toast"); if(!t) return;
+  t.textContent=msg; t.classList.remove("hidden");
+  clearTimeout(window.__toastTimer);
+  window.__toastTimer=setTimeout(()=>t.classList.add("hidden"),2600);
+}
+
+function openModal(html){
+  $("modalContent").innerHTML=html;
+  $("installModal").classList.remove("hidden");
+}
+function closeModal(){ $("installModal").classList.add("hidden"); }
+document.querySelectorAll("[data-close-modal]").forEach(x=>x.addEventListener("click",closeModal));
+
+function iosInstructions(){
+  openModal(`
+    <span class="section-kicker">IPHONE / IPAD</span>
+    <h3>Installer som webapp</h3>
+    <p>Bruk Safari og legg e‑2008 CAN på Hjem-skjermen.</p>
+    <div class="install-steps">
+      <div class="install-step">Åpne denne siden i <strong>Safari</strong>.</div>
+      <div class="install-step">Trykk <strong>Del</strong> i Safari.</div>
+      <div class="install-step">Velg <strong>Legg til på Hjem-skjermen</strong>.</div>
+      <div class="install-step">Slå på <strong>Åpne som webapp</strong> og trykk <strong>Legg til</strong>.</div>
+    </div>
+    <div class="compat-card">
+      <div class="compat-symbol">!</div>
+      <div><strong>CAN-tilkobling på iOS</strong><p>Safari støtter ikke Web Serial. Appen kan installeres, men Bluetooth Classic ELM327 kan ikke kobles til gjennom denne webversjonen på iPhone/iPad.</p></div>
+    </div>`);
+}
+
+function androidInstructions(){
+  openModal(`
+    <span class="section-kicker">ANDROID</span>
+    <h3>Installer e‑2008 CAN</h3>
+    <p>Åpne siden i Chrome/Chromium over HTTPS. Når nettleseren godkjenner appen som installérbar får du direkte installasjon.</p>
+    <div class="install-steps">
+      <div class="install-step">Åpne denne siden i <strong>Chrome</strong>.</div>
+      <div class="install-step">Trykk <strong>Installer app</strong> her i e‑2008 CAN.</div>
+      <div class="install-step">Bekreft installasjonen i Chrome.</div>
+      <div class="install-step">Start den fra hjemskjerm/appskuff som en vanlig app.</div>
+    </div>
+    <button id="modalAndroidInstall" class="primary">Installer nå</button>`);
+  setTimeout(()=>{$("modalAndroidInstall")?.addEventListener("click",triggerInstall)},0);
+}
+
+async function triggerInstall(){
+  if(isStandalone){ toast("Appen er allerede installert."); return; }
+  if(isIOS){ iosInstructions(); return; }
+  if(deferredInstallPrompt){
+    deferredInstallPrompt.prompt();
+    const choice=await deferredInstallPrompt.userChoice;
+    if(choice?.outcome==="accepted") toast("Installasjon startet.");
+    deferredInstallPrompt=null;
+    updatePlatformUI();
+    return;
+  }
+  if(isAndroid){ androidInstructions(); return; }
+  openModal(`<span class="section-kicker">INSTALLASJON</span><h3>Installer webappen</h3><p>Bruk nettleserens meny og velg Installer app / Legg til på hjemskjermen. Appen må åpnes over HTTPS.</p>`);
+}
+
+function updatePlatformUI(){
+  const title=$("platformTitle"), txt=$("platformText"), icon=$("platformIcon");
+  if(isStandalone){
+    icon.textContent="✓"; title.textContent="Appen er installert"; txt.textContent="Kjører som frittstående webapp.";
+  } else if(isIOS){
+    icon.textContent="●"; title.textContent="iPhone / iPad oppdaget"; txt.textContent="Installer via Safari → Del → Legg til på Hjem-skjermen.";
+  } else if(isAndroid){
+    icon.textContent="A"; title.textContent="Android oppdaget"; txt.textContent=deferredInstallPrompt ? "Klar for installasjon fra Chrome." : "Chrome/Chromium anbefales for Bluetooth Classic.";
+  } else {
+    icon.textContent="◉"; title.textContent="Nettleser oppdaget"; txt.textContent="Installer som PWA dersom nettleseren støtter det.";
+  }
+
+  // Be explicit about CAN transport support.
+  if(!("serial" in navigator) && !isStandalone){
+    txt.textContent += " Web Serial er ikke tilgjengelig i denne nettleseren.";
+  }
+}
+
+window.addEventListener("beforeinstallprompt", e=>{
+  e.preventDefault();
+  deferredInstallPrompt=e;
+  updatePlatformUI();
+});
+window.addEventListener("appinstalled", ()=>{
+  deferredInstallPrompt=null;
+  toast("e‑2008 CAN er installert.");
+  updatePlatformUI();
+});
+updatePlatformUI();
+
+$("installBtn")?.addEventListener("click",triggerInstall);
+$("heroInstallBtn")?.addEventListener("click",triggerInstall);
+$("androidInstallBtn")?.addEventListener("click",triggerInstall);
+$("iosGuideBtn")?.addEventListener("click",iosInstructions);
+$("platformAction")?.addEventListener("click",()=>showTab("installPanel"));
+
+// -------- Connection --------
+async function connect(){
+  if(!("serial" in navigator)){
+    if(isIOS){
+      iosInstructions();
+      toast("CAN via Bluetooth Classic er ikke tilgjengelig i Safari/iOS.");
+    } else {
+      openModal(`<span class="section-kicker">BLUETOOTH / SERIAL</span><h3>Web Serial mangler</h3><p>Åpne appen i oppdatert Chrome/Chromium over HTTPS. På Android må Bluetooth Classic-adapteren være paret med telefonen først.</p>`);
+    }
+    return;
+  }
+  try{
+    port = await navigator.serial.requestPort();
+    await port.open({baudRate:38400, bufferSize:32768});
+    writer = port.writable.getWriter();
+    readLoop();
+    setStatus(true, "Tilkoblet");
+    $("initBtn").disabled = false;
+    term("✓ Bluetooth/serial tilkoblet");
+  }catch(e){
+    term("FEIL: "+e.message);
+  }
+}
+
+async function readLoop(){
+  try{
+    reader = port.readable.getReader();
+    const decoder = new TextDecoder();
+    while(true){
+      const {value, done} = await reader.read();
+      if(done) break;
+      if(!value) continue;
+
+      const s = decoder.decode(value);
+
+      if(sniffing){
+        processSniffChunk(s);
+        continue;
+      }
+
+      rxBuffer += s;
+      if(rxBuffer.includes(">") && waitingResolver){
+        const r = rxBuffer;
+        rxBuffer = "";
+        const res = waitingResolver;
+        waitingResolver = null;
+        res(r);
+      }
+    }
+  }catch(e){ term("Lesefeil: "+e.message); }
+  finally{ try{reader?.releaseLock()}catch{} }
+}
+
+async function rawWrite(text){
+  if(!writer) throw new Error("Ikke tilkoblet");
+  await writer.write(enc.encode(text));
+}
+
+async function cmd(text, timeout=1800){
+  if(sniffing) throw new Error("Stopp rå monitor først");
+  if(!writer) throw new Error("Ikke tilkoblet");
+  rxBuffer = "";
+  await rawWrite(text.replace(/\s+/g,"") + "\r");
+  term("TX  "+text);
+  const response = await new Promise((resolve,reject)=>{
+    const t = setTimeout(()=>{
+      if(waitingResolver){ waitingResolver=null; reject(new Error("Timeout: "+text)); }
+    }, timeout);
+    waitingResolver = r => { clearTimeout(t); resolve(r); };
+  });
+  const clean = response.replace(/\r/g,"\n").replace(/\n+/g,"\n").trim();
+  term("RX  "+clean.replace(/\n/g," | "));
+  return clean;
+}
+
+async function initElm(){
+  const seq = ["ATZ","ATI","ATS0","ATE0","ATL0","ATSP6","ATDP","ATST16","ATCAF1","ATAL","ATFCSM1"];
+  try{
+    for(const c of seq) await cmd(c, c==="ATZ" ? 3000:1800);
+    $("startBtn").disabled = false;
+    $("sniffStartBtn").disabled = false;
+    term("✓ ELM initialisert for 11-bit 500 kbit/s CAN");
+  }catch(e){ term("Init-feil: "+e.message); }
+}
+
+// -------- Diagnostic polling --------
+function hexBytes(s){
+  const m = s.match(/[0-9A-Fa-f]{2}/g);
+  return m ? m.map(x=>parseInt(x,16)) : [];
+}
+function u16(b,o){ return ((b[o]||0)<<8) | (b[o+1]||0); }
+function u32(b,o){ return (((b[o]||0)*0x1000000)+((b[o+1]||0)<<16)+((b[o+2]||0)<<8)+(b[o+3]||0))>>>0; }
+
+function payloadForDid(response, did){
+  let s = response.toUpperCase()
+    .replace(/SEARCHING\.\.\./g,"")
+    .replace(/NO DATA/g,"")
+    .replace(/STOPPED/g,"")
+    .replace(/>/g,"");
+  const lines = s.split(/[\r\n|]+/).map(x=>x.replace(/[^0-9A-F]/g,"")).filter(Boolean);
+  const marker = "62"+did;
+  for(const line of lines){
+    const idx = line.indexOf(marker);
+    if(idx>=0) return hexBytes(line.slice(idx+marker.length));
+  }
+  const all = lines.join("");
+  const idx = all.indexOf(marker);
+  if(idx>=0) return hexBytes(all.slice(idx+marker.length));
+  return null;
+}
+
+function decodeSignal(sig, payload){
+  if(sig.kind==="vin_mode09") return null;
+  if(!payload) return null;
+  const o = sig.offset||0;
+  let v;
+  if(sig.kind==="u8") v=(payload[o]??0)*(sig.factor??1)+(sig.add??0);
+  else if(sig.kind==="u16be") v=u16(payload,o)*(sig.factor??1)+(sig.add??0);
+  else if(sig.kind==="u32be") v=u32(payload,o)*(sig.factor??1)+(sig.add??0);
+  else if(sig.kind==="bool_u8_gt0") return (payload[o]??0)>0;
+  else if(sig.kind==="custom" && sig.did==="D816") v=(76800-u32(payload,o))*0.018;
+  else if(sig.kind==="array_u16be"){
+    const arr=[]; for(let i=0;i<sig.count;i++) arr.push(u16(payload,o+i*2)*(sig.factor??1)+(sig.add??0));
+    return arr;
+  } else if(sig.kind==="array_u8"){
+    const arr=[]; for(let i=0;i<sig.count;i++) arr.push((payload[o+i]??0)*(sig.factor??1)+(sig.add??0));
+    return arr;
+  } else if(sig.kind==="array_min_u16be"){
+    const arr=[];
+    for(let i=o;i+1<payload.length;i+=2){
+      let x=u16(payload,i)*(sig.factor??1)+(sig.add??0);
+      if(x>100 && x<=110) x=100;
+      if(x>=50 && x<=100) arr.push(x);
+    }
+    return arr.length ? Math.min(...arr) : null;
+  } else return null;
+  if(Number.isFinite(v) && sig.min!==undefined && (v<sig.min || v>sig.max)) return null;
+  return v;
+}
+
+function fmt(v){
+  if(Array.isArray(v)){
+    const valid=v.filter(Number.isFinite);
+    if(!valid.length) return "—";
+    const min=Math.min(...valid), max=Math.max(...valid);
+    return `${valid.length} stk • ${min.toFixed(3)}–${max.toFixed(3)}`;
+  }
+  if(typeof v==="boolean") return v ? "JA" : "NEI";
+  if(typeof v==="number"){
+    const a=Math.abs(v);
+    return a>=100 ? v.toFixed(0) : a>=10 ? v.toFixed(1) : v.toFixed(3).replace(/0+$/,"").replace(/\.$/,"");
+  }
+  return String(v);
+}
+
+async function ensureSetup(ecu){
+  if(currentSetupKey===ecu.key) return;
+  for(const c of ecu.setup) await cmd(c);
+  currentSetupKey=ecu.key;
+}
+
+async function pollSignal(ecu, sig){
+  await ensureSetup(ecu);
+  const response = await cmd(sig.command, sig.kind.startsWith("array_") ? 3500 : 1800);
+  if(sig.kind==="vin_mode09"){
+    const compact=response.toUpperCase().replace(/[^0-9A-F]/g,"");
+    const p=compact.indexOf("4902");
+    let vin="";
+    if(p>=0){
+      const bytes=hexBytes(compact.slice(p+4));
+      for(const b of bytes){ if((b>=48&&b<=57)||(b>=65&&b<=90)) vin+=String.fromCharCode(b); }
+      vin=vin.slice(-17);
+    }
+    if(vin.length===17){
+      signalState.set(ecu.key+":"+sig.did,{display:vin,raw:response});
+      addLog(sig.name, vin, sig.unit, sig.did, ecu);
+    }
+    return;
+  }
+  const payload = payloadForDid(response, sig.did);
+  const value = decodeSignal(sig,payload);
+  if(value!==null && value!==undefined){
+    signalState.set(ecu.key+":"+sig.did,{display:fmt(value),value,raw:response});
+    addLog(sig.name, Array.isArray(value)?JSON.stringify(value):value, sig.unit, sig.did, ecu);
+  }
+}
+
+function addLog(name,value,unit,did,ecu){
+  logRows.push({time:new Date().toISOString(),name,value,unit,did,requestId:ecu.request_id,responseId:ecu.response_id});
+  if(logRows.length>20000) logRows.shift();
+  $("rowCount").textContent=logRows.length+" rader";
+}
+
+async function liveLoop(){
+  const fast = [];
+  for(const ecu of DB.ecus){
+    for(const sig of ecu.signals){
+      if(!["D440","D442","D426","0902"].includes(sig.did)) fast.push({ecu,sig});
+    }
+  }
+  while(live){
+    for(const x of fast){
+      if(!live) break;
+      try{ await pollSignal(x.ecu,x.sig); }catch(e){ term("Poll: "+e.message); }
+      renderTiles();
+      await new Promise(r=>setTimeout(r,25));
+    }
+  }
+}
+
+function startLive(){
+  if(sniffing) return;
+  live=true;
+  $("startBtn").disabled=true;
+  $("stopBtn").disabled=false;
+  $("sniffStartBtn").disabled=true;
+  liveLoop();
+}
+function stopLive(){
+  live=false;
+  $("startBtn").disabled=false;
+  $("stopBtn").disabled=true;
+  $("sniffStartBtn").disabled=false;
+}
+
+// -------- CAN Sniffer --------
+
+// Accept common ELM monitor formats:
+// "123 8 11 22 33 44 55 66 77 88"
+// "123 11 22 33 44 55 66 77 88"
+// "7E8 8 02 41 0C ..."
+// Header must be a 3-hex 11-bit CAN ID.
+function parseMonitorLine(line){
+  line = line.trim().toUpperCase();
+  if(!line || line==="STOPPED" || line==="BUFFER FULL" || line===">") return null;
+  line = line.replace(/\s+/g," ");
+  const parts = line.split(" ").filter(Boolean);
+  if(!/^[0-7][0-9A-F]{2}$/.test(parts[0]||"")) return null;
+
+  const id = parts[0];
+  let rest = parts.slice(1);
+  let dlc = null;
+
+  if(rest.length && /^[0-8]$/.test(rest[0])){
+    dlc = parseInt(rest[0],10);
+    rest = rest.slice(1);
+  }
+  const data = rest.filter(x=>/^[0-9A-F]{2}$/.test(x)).map(x=>parseInt(x,16));
+  if(dlc===null) dlc = Math.min(data.length,8);
+  if(!data.length) return null;
+  return {id, dlc, data:data.slice(0,Math.max(dlc,data.length))};
+}
+
+function processSniffChunk(s){
+  sniffLineBuffer += s.replace(/\r/g,"\n");
+  const lines = sniffLineBuffer.split("\n");
+  sniffLineBuffer = lines.pop() || "";
+  for(const line of lines){
+    const f = parseMonitorLine(line);
+    if(f) processFrame(f);
+  }
+}
+
+function processFrame(frame){
+  const now = performance.now();
+  const wall = new Date().toISOString();
+  sniffFrames++;
+
+  let st = sniffMap.get(frame.id);
+  if(!st){
+    st = {
+      id:frame.id, count:0, first:now, last:now, prev:null, data:frame.data.slice(),
+      dlc:frame.dlc, byteChanges:Array(8).fill(0), byteMin:Array(8).fill(255),
+      byteMax:Array(8).fill(0), byteSeen:Array.from({length:8},()=>new Set()),
+      eventStats:{}
+    };
+    sniffMap.set(frame.id, st);
+  }
+
+  st.count++;
+  st.last = now;
+  st.dlc = frame.dlc;
+
+  if(st.prev){
+    for(let i=0;i<Math.min(8,frame.data.length);i++){
+      if(st.prev[i]!==undefined && st.prev[i]!==frame.data[i]) st.byteChanges[i]++;
+    }
+  }
+
+  for(let i=0;i<Math.min(8,frame.data.length);i++){
+    const v=frame.data[i];
+    st.byteMin[i]=Math.min(st.byteMin[i],v);
+    st.byteMax[i]=Math.max(st.byteMax[i],v);
+    st.byteSeen[i].add(v);
+  }
+
+  const event = (Date.now() < currentEventUntil) ? currentEvent : "";
+  if(event){
+    if(!st.eventStats[event]) st.eventStats[event]=Array.from({length:8},()=>({n:0,min:255,max:0,sum:0,changes:0,last:null}));
+    for(let i=0;i<Math.min(8,frame.data.length);i++){
+      const e=st.eventStats[event][i], v=frame.data[i];
+      e.n++; e.min=Math.min(e.min,v); e.max=Math.max(e.max,v); e.sum+=v;
+      if(e.last!==null && e.last!==v) e.changes++;
+      e.last=v;
+    }
+  }
+
+  st.prev = st.data ? st.data.slice() : null;
+  st.data = frame.data.slice();
+
+  sniffRawRows.push({
+    time:wall, id:frame.id, dlc:frame.dlc,
+    data:frame.data.map(x=>x.toString(16).padStart(2,"0").toUpperCase()).join(" "),
+    event
+  });
+  if(sniffRawRows.length>100000) sniffRawRows.shift();
+
+  if(!renderSniffTimer){
+    renderSniffTimer=setTimeout(()=>{
+      renderSniffTimer=null;
+      renderSniffer();
+    },120);
+  }
+}
+
+function baselineChanged(st){
+  const base = sniffBaseline.get(st.id);
+  if(!base) return false;
+  const n=Math.max(base.length,st.data.length);
+  for(let i=0;i<n;i++) if(base[i]!==st.data[i]) return true;
+  return false;
+}
+
+function hzFor(st){
+  const seconds=(st.last-st.first)/1000;
+  return seconds>0 ? st.count/seconds : 0;
+}
+
+function activityBars(st){
+  const max=Math.max(1,...st.byteChanges);
+  return `<div class="activity">${
+    st.byteChanges.map((c,i)=>{
+      const h=Math.max(2,Math.round(20*c/max));
+      return `<i title="Byte ${i}: ${c} endringer, ${st.byteSeen[i].size} verdier" style="height:${h}px"></i>`;
+    }).join("")
+  }</div>`;
+}
+
+function renderSniffer(){
+  const filter=$("sniffFilter").value.trim().toUpperCase().replace(/^0X/,"");
+  const onlyChanged=$("onlyChanged").checked;
+  const freeze=$("freezeRows").checked;
+
+  let rows=[...sniffMap.values()];
+  if(filter) rows=rows.filter(x=>x.id.includes(filter));
+  if(onlyChanged) rows=rows.filter(baselineChanged);
+
+  if(!freeze){
+    rows.sort((a,b)=>{
+      const ac=baselineChanged(a)?1:0, bc=baselineChanged(b)?1:0;
+      if(ac!==bc) return bc-ac;
+      return hzFor(b)-hzFor(a);
+    });
+  } else {
+    rows.sort((a,b)=>parseInt(a.id,16)-parseInt(b.id,16));
+  }
+
+  $("sniffBody").innerHTML = rows.map(st=>{
+    const base=sniffBaseline.get(st.id);
+    const changed=baselineChanged(st);
+    const bytes=st.data.map((v,i)=>{
+      const ch=base && base[i]!==v;
+      const active=st.byteChanges[i]>0;
+      return `<span class="byte ${ch?"changed":""} ${active?"active":""}" title="B${i}">${v.toString(16).padStart(2,"0").toUpperCase()}</span>`;
+    }).join("");
+    const changeTxt = base ? st.data.map((v,i)=>base[i]===v?"·":"▲").join(" ") : "—";
+    return `<tr class="${changed?"changed":""}">
+      <td><strong>0x${st.id}</strong></td>
+      <td>${hzFor(st).toFixed(1)}</td>
+      <td>${st.dlc}</td>
+      <td>${bytes}</td>
+      <td>${changeTxt}</td>
+      <td>${activityBars(st)}</td>
+      <td>${(st.last/1000).toFixed(1)}s</td>
+    </tr>`;
+  }).join("");
+
+  $("sniffFrameCount").textContent=sniffFrames.toLocaleString("no-NO");
+  $("sniffIdCount").textContent=sniffMap.size;
+  $("sniffChangedCount").textContent=[...sniffMap.values()].filter(baselineChanged).length;
+  $("activeEvent").textContent=(Date.now()<currentEventUntil && currentEvent)?currentEvent:"—";
+  renderCandidates();
+}
+
+function setBaseline(){
+  sniffBaseline.clear();
+  for(const [id,st] of sniffMap) sniffBaseline.set(id, st.data.slice());
+  renderSniffer();
+}
+
+function markEvent(name){
+  name=(name||"").trim();
+  if(!name) return;
+  currentEvent=name;
+  currentEventUntil=Date.now()+5000;
+  $("activeEvent").textContent=name+" (5s)";
+  term("EVENT: "+name);
+  setTimeout(()=>renderSniffer(),5100);
+}
+
+function scoreCandidates(){
+  const out=[];
+  for(const st of sniffMap.values()){
+    for(let i=0;i<Math.min(8,st.dlc||8);i++){
+      const span=st.byteMax[i]-st.byteMin[i];
+      const unique=st.byteSeen[i].size;
+      const changes=st.byteChanges[i];
+      if(unique<2 || changes<2) continue;
+
+      const eventScores=[];
+      for(const [event, arr] of Object.entries(st.eventStats)){
+        const e=arr[i];
+        if(e && e.n>=2){
+          eventScores.push({
+            event,
+            span:e.max-e.min,
+            mean:e.sum/e.n,
+            changes:e.changes,
+            n:e.n
+          });
+        }
+      }
+      let eventBoost=eventScores.reduce((a,e)=>a + Math.min(15,e.changes) + Math.min(20,e.span/4),0);
+      let score=Math.log2(unique+1)*8 + Math.log2(changes+1)*6 + Math.min(40,span/3) + eventBoost;
+      out.push({
+        id:st.id, byte:i, unique, changes, span, score,
+        min:st.byteMin[i], max:st.byteMax[i], events:eventScores
+      });
+    }
+
+    // Also scan adjacent 16-bit big-endian words using current global min/max approximation from raw rows.
+    for(let i=0;i<Math.min(7,(st.dlc||8)-1);i++){
+      const vals=[];
+      let n=0;
+      for(let r=sniffRawRows.length-1;r>=0 && n<4000;r--){
+        const row=sniffRawRows[r];
+        if(row.id!==st.id) continue;
+        const b=row.data.split(" ").map(x=>parseInt(x,16));
+        if(b.length>i+1){ vals.push((b[i]<<8)|b[i+1]); n++; }
+      }
+      if(vals.length<8) continue;
+      const mn=Math.min(...vals), mx=Math.max(...vals);
+      const span=mx-mn;
+      const uniq=new Set(vals).size;
+      if(uniq<4 || span<4) continue;
+      const score=Math.log2(uniq+1)*5 + Math.min(35,span/200);
+      out.push({id:st.id, word:`B${i}-B${i+1}`, unique:uniq, span, score, min:mn, max:mx, events:[]});
+    }
+  }
+  return out.sort((a,b)=>b.score-a.score).slice(0,30);
+}
+
+function renderCandidates(){
+  const cands=scoreCandidates();
+  $("candidateList").innerHTML=cands.length ? cands.map(c=>{
+    const target=c.word || `B${c.byte}`;
+    const ev=(c.events||[]).map(e=>`<span class="tag">${e.event}</span>`).join("");
+    return `<div class="candidate">
+      <strong>0x${c.id} ${target}</strong>
+      <span class="tag">score ${c.score.toFixed(1)}</span>
+      ${ev}
+      <div class="muted">min ${c.min}, maks ${c.max}, spenn ${c.span}, unike ${c.unique}</div>
+    </div>`;
+  }).join("") : `<div class="muted">Ingen kandidater ennå. Kjør monitor og merk noen hendelser.</div>`;
+}
+
+async function startSniffer(){
+  if(live) stopLive();
+  if(sniffing) return;
+  try{
+    // Configure ELM for raw 11-bit CAN headers and no auto formatting.
+    const setup=["ATSP6","ATH1","ATS1","ATL0","ATE0","ATCAF0","ATAL","ATCRA"];
+    for(const c of setup){
+      // ATCRA with no parameter is clone-dependent; ignore failure.
+      try{ await cmd(c,1600); }catch(e){ term("Sniffer setup: "+c+" → "+e.message); }
+    }
+
+    sniffing=true;
+    sniffLineBuffer="";
+    rxBuffer="";
+    $("sniffStartBtn").disabled=true;
+    $("sniffStopBtn").disabled=false;
+    $("baselineBtn").disabled=false;
+    $("startBtn").disabled=true;
+    term("TX  ATMA (rå CAN monitor)");
+    await rawWrite("ATMA\r");
+  }catch(e){
+    sniffing=false;
+    term("Sniffer-feil: "+e.message);
+  }
+}
+
+async function stopSniffer(){
+  if(!sniffing) return;
+  try{
+    // ELM327 monitor commands stop when any character is received.
+    await rawWrite(" ");
+    await new Promise(r=>setTimeout(r,300));
+    sniffing=false;
+    sniffLineBuffer="";
+    currentSetupKey="";
+    $("sniffStartBtn").disabled=false;
+    $("sniffStopBtn").disabled=true;
+    $("startBtn").disabled=false;
+    term("✓ Rå monitor stoppet");
+    renderSniffer();
+  }catch(e){
+    sniffing=false;
+    term("Stoppfeil: "+e.message);
+  }
+}
+
+function clearSniffer(){
+  sniffFrames=0;
+  sniffRawRows=[];
+  sniffMap.clear();
+  sniffBaseline.clear();
+  currentEvent="";
+  currentEventUntil=0;
+  renderSniffer();
+}
+
+function exportLearned(){
+  const candidates=scoreCandidates();
+  const ids=[...sniffMap.values()].map(st=>({
+    can_id:"0x"+st.id,
+    dlc:st.dlc,
+    observed_frames:st.count,
+    estimated_hz:Number(hzFor(st).toFixed(2)),
+    last_data:st.data.map(x=>x.toString(16).padStart(2,"0").toUpperCase()),
+    bytes:st.byteChanges.map((changes,i)=>({
+      index:i,
+      min:st.byteMin[i]===255?null:st.byteMin[i],
+      max:st.byteMax[i],
+      unique_values:st.byteSeen[i].size,
+      changes
+    })),
+    event_stats:st.eventStats
+  }));
+
+  const learned={
+    format:"e2008-can-autodecode",
+    version:2,
+    exported_at:new Date().toISOString(),
+    vehicle:DB.vehicle,
+    bus:DB.bus,
+    notes:[
+      "Automatisk observert database. Ikke bekreftet DBC.",
+      "Bruk hendelsesmerking og flere kjøresituasjoner før signaler navngis."
+    ],
+    ids,
+    candidate_signals:candidates
+  };
+  downloadBlob(JSON.stringify(learned,null,2),"application/json",
+    "e2008_learned_can_"+new Date().toISOString().replace(/[:.]/g,"-")+".json");
+}
+
+function downloadBlob(content,type,name){
+  const blob=new Blob([content],{type});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download=name;
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+
+function exportSniffCsv(){
+  const esc=x=>`"${String(x??"").replace(/"/g,'""')}"`;
+  const cols=["time","id","dlc","data","event"];
+  const csv=[cols.join(","),...sniffRawRows.map(r=>cols.map(c=>esc(r[c])).join(","))].join("\n");
+  downloadBlob(csv,"text/csv;charset=utf-8",
+    "e2008_raw_can_"+new Date().toISOString().replace(/[:.]/g,"-")+".csv");
+}
+
+function exportDiagCsv(){
+  const esc = x => `"${String(x??"").replace(/"/g,'""')}"`;
+  const cols=["time","name","value","unit","did","requestId","responseId"];
+  const csv=[cols.join(","),...logRows.map(r=>cols.map(c=>esc(r[c])).join(","))].join("\n");
+  downloadBlob(csv,"text/csv;charset=utf-8",
+    "e2008_diag_"+new Date().toISOString().replace(/[:.]/g,"-")+".csv");
+}
+
+$("connectBtn").addEventListener("click",connect);
+$("initBtn").addEventListener("click",initElm);
+$("startBtn").addEventListener("click",startLive);
+$("stopBtn").addEventListener("click",stopLive);
+$("csvBtn").addEventListener("click",exportDiagCsv);
+
+$("sniffStartBtn").addEventListener("click",startSniffer);
+$("sniffStopBtn").addEventListener("click",stopSniffer);
+$("baselineBtn").addEventListener("click",setBaseline);
+$("clearSniffBtn").addEventListener("click",clearSniffer);
+$("learnBtn").addEventListener("click",exportLearned);
+$("sniffCsvBtn").addEventListener("click",exportSniffCsv);
+$("sniffFilter").addEventListener("input",renderSniffer);
+$("onlyChanged").addEventListener("change",renderSniffer);
+$("freezeRows").addEventListener("change",renderSniffer);
+document.querySelectorAll(".eventBtn").forEach(b=>b.addEventListener("click",()=>markEvent(b.dataset.event)));
+$("customEventBtn").addEventListener("click",()=>markEvent($("customEvent").value));
+
+renderTiles();
+renderSniffer();
+
+if("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(()=>{});
+
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const isLocalish = location.protocol === "content:" || location.protocol === "file:";
+  const n = document.getElementById("localFileNotice");
+  if (isLocalish && n) n.classList.remove("hidden");
+});
+</script>
+
 </body>
 </html>

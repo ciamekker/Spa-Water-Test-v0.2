@@ -1,0 +1,20 @@
+v3.1
+- Self-contained index.html for Android content:// preview
+- Embedded CSS, JavaScript, database and main icon
+- Local preview warning for file/content URLs
+
+v3.0
+- Nytt mobilførst GUI
+- PWA-installasjon Android
+- Safari/iOS hjemskjermveiledning
+- Appikoner + Apple touch icon
+- Plattformdeteksjon
+- Web Serial-kompatibilitetsstatus
+- Live hero-kort for SOC/HV/celle-delta
+- Service worker v3
+
+v2.0
+- Auto Decode / raw CAN sniffer
+- Baseline diff
+- Event tagging
+- Learned JSON / raw CSV

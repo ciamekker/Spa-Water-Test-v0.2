@@ -1,0 +1,6 @@
+Sources used as technical reference:
+- https://github.com/nickn17/evDash
+- https://raw.githubusercontent.com/nickn17/evDash/master/src/CarPeugeotE208.cpp
+- https://github.com/prototux/PSA-RE
+- https://github.com/prototux/PSA-CAN-RE-old
+- https://developer.chrome.com/blog/serial-over-bluetooth

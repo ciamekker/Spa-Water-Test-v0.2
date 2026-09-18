@@ -1,21 +1,65 @@
 {
-  "name": "Spa Water Test",
-  "short_name": "Spa Test",
-  "start_url": "./",
+  "id": "./",
+  "name": "Peugeot e-2008 CAN Logger",
+  "short_name": "e2008 CAN",
+  "description": "CAN/UDS logger og Auto Decode for Peugeot e-2008 / PSA e-CMP.",
+  "start_url": "./?source=pwa",
+  "scope": "./",
   "display": "standalone",
-  "background_color": "#020b14",
-  "theme_color": "#04111f",
-  "description": "Kamera-basert analyse av spa-teststrips.",
+  "display_override": [
+    "window-controls-overlay",
+    "standalone"
+  ],
+  "orientation": "any",
+  "background_color": "#090e15",
+  "theme_color": "#0b1118",
+  "categories": [
+    "utilities",
+    "automotive"
+  ],
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
       "src": "icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Liveverdier",
+      "short_name": "Live",
+      "url": "./?tab=livePanel",
+      "icons": [
+        {
+          "src": "icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Auto Decode",
+      "short_name": "Sniffer",
+      "url": "./?tab=snifferPanel",
+      "icons": [
+        {
+          "src": "icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
     }
   ]
 }
